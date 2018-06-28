@@ -1,0 +1,209 @@
+<template>
+  <form report-submit="true" @submit="handleGoActive({{item}})" class="activity">
+    <button formType="submit" class='activity'>
+        <image class="ban" src="{{item.bannerHome}}" />
+        <view style="color:{{item.status=='1' ? '#ccc' : '#747474'}}" class="title">{{item.slogan}}</view>
+        <image class="timelimit" wx:if="{{item.status === 1}}" src="{{ staticUrl + '/images/edimgicon.png'}}" />
+        <image class="timelimit" wx:if="{{item.status === 0 && item.slogan === '10 分钟掌握英语发音诀窍'}}" src="{{ staticUrl+'/images/xian-time.png'}}" />
+        <image class="timelimit" wx:if="{{item.status === 0 && item.slogan !== '10 分钟掌握英语发音诀窍'}}" src="{{ staticUrl+'/images/stimgicon.png'}}" />
+        <image class="timelimit" wx:if="{{item.status === -1}}" src="{{ staticUrl + '/images/wtimgicon.png'}}" />
+        <image wx:if="{{item.status==0}}" class="go" bindtap="goActives({{item._id}},{{item.activeUrl}})" src="{{staticUrl}}/images/go.png" />
+        <view wx:if="{{item.status===0}}" class="num">{{item.totalPeople > 9999 ? '1W+' : item.totalPeople}}人已免费领取</view>
+        <view wx:if="{{item.status===-1}}" class="num">敬请期待...</view>
+        <view wx:if="{{item.status==1}}" class="edimg"></view>
+      </button>
+  </form>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+    throttle,
+    staticUrl
+  } from '@/utils'
+  import reportMixIn from '@/mixins/report'
+  export default class Item extends wepy.component {
+    components = {}
+    data = {
+      staticUrl
+    }
+    props = {
+      item: Object
+    }
+    computed = {}
+    watch = {}
+    mixins = [
+      reportMixIn
+    ]
+    methods = {
+      handleGoActive: throttle(this.handleGoActive)
+    }
+    events = {}
+    onLoad() {
+      this.init()
+    }
+    // ==========  自定义函数必须写在这之后  =======================================
+    init() {}
+    handleGoActive(item, e) {
+      this.reportFormId(e)
+      if (item.status === 1 || item.status === -1) return
+      wepy.navigateTo({
+        url: `${item.activeUrl}?activeId=${item._id}`
+      })
+    }
+  }
+</script>
+
+<style type='less'>
+  .activity {
+    position: relative;
+    width: 660rpx;
+    height: 435rpx;
+    margin-bottom: 40rpx;
+    background: #ffffff;
+    border-radius: 10rpx;
+    overflow: hidden;
+    box-shadow: 2px 0 5px 5px #eee;
+    padding: 0;
+    &:after {
+      border: none;
+    }
+    .ban {
+      width: 660rpx;
+      height: 286rpx;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .go {
+      width: 98rpx;
+      height: 98rpx;
+      position: absolute;
+      right: 30rpx;
+      bottom: 95rpx;
+    }
+    .title {
+      position: absolute;
+      left: 17px;
+      bottom: 65rpx;
+      font-size: 28rpx;
+    }
+    .timelimit {
+      position: absolute;
+      width: 204rpx;
+      height: 23rpx;
+      bottom: 41rpx;
+      left: 36rpx;
+    }
+    .num {
+      position: absolute;
+      bottom: 41rpx;
+      right: 40rpx;
+      line-height: 22rpx;
+      font-size: 22rpx;
+      color: #999999;
+    }
+    .edimg {
+      width: 100%;
+      height: 100%;
+      background: black;
+      opacity: .3;
+    }
+    .btmtip {
+      font-size: 22rpx;
+      color: #bbbbbb;
+      text-align: center;
+    }
+  }
+  page {
+    background: #f7f7f7;
+    border-top: 1px solid #f7f7f7;
+  }
+  .personal {
+    .line(@color) {
+      width: 5rpx;
+      height: 40rpx;
+      display: inline-block;
+      margin-right: 50rpx;
+      vertical-align: middle;
+      background: @color
+    }
+    padding-bottom: 98rpx;
+    height: 100%;
+    .top {
+      height: 280rpx;
+      background: #fff;
+      overflow: hidden;
+      background-image: url(https://res.new.sunlands.site/avatar-bg.png);
+      background-size: 100% 100%;
+      .avatarUrl {
+        width: 110rpx;
+        height: 110rpx;
+        margin: 62rpx auto 20rpx;
+        border-radius: 15rpx;
+        overflow: hidden;
+      }
+      .nickName {
+        font-size: 26rpx;
+        color: #666666;
+        text-align: center;
+      }
+    }
+    .list {
+      padding: 0 50rpx;
+      .source {
+        .line {
+          .line(#ffc973)
+        }
+      }
+      .coupon {
+        .line {
+          .line(#71d8d2)
+        }
+      }
+      .contact-us {
+        padding: 0;
+        text-align: left;
+        border: none;
+        border-radius: 0px;
+        &:after {
+          border: none;
+        }
+        .line {
+          .line(#b39eff)
+        }
+      }
+      .item {
+        margin-top: 30rpx;
+        height: 100rpx;
+        background: #fff;
+        line-height: 1;
+        position: relative;
+        box-shadow: 0rpx 5rpx 20rpx rgba(0, 0, 0, 0.05);
+        &:nth-child(1) {
+          margin-top: 48rpx;
+        }
+        image {
+          width: 30rpx;
+          height: 30rpx;
+          vertical-align: middle;
+          margin-right: 15rpx;
+        }
+        .text {
+          display: inline;
+          line-height: 100rpx;
+          font-size: 30rpx;
+          color: #444444;
+        }
+        .arrow {
+          position: absolute;
+          right: 20rpx;
+          top: 40rpx;
+          width: 14rpx;
+          height: 24rpx;
+          color: #eeeeee;
+        }
+      }
+    }
+  }
+</style>

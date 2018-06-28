@@ -1,0 +1,230 @@
+<style lang='less'>
+  .exam-wrapper {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .top {
+      position: absolute;
+      left: 302rpx;
+      top: 32rpx;
+      .avatarUrl {
+        width: 142rpx;
+        height: 142rpx;
+        overflow: hidden;
+        border-radius: 71rpx;
+        border: solid 5rpx #fff;
+      }
+      .nickName {
+        margin-top: 10rpx;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 142rpx;
+        text-align: center;
+        font-size: 26rpx;
+        color: #fff;
+      }
+    }
+    .regular {
+      width: 200rpx;
+      height: 50rpx;
+      background: transparent;
+      color: #fff;
+      position: absolute;
+      font-size: 30rpx;
+      top: 170rpx;
+      right: 30rpx;
+    }
+    .banner {
+      width: 750rpx;
+      height: 100%;
+      display: block;
+    }
+    .btn {
+      position: absolute;
+      left: 142rpx;
+      bottom: 60rpx;
+      width: 456rpx;
+      height: 94rpx;
+      background-color: #f1bf07;
+      border-radius: 47rpx;
+      line-height: 94rpx;
+      font-size: 40rpx;
+      color: #fff;
+      text-align: center;
+      &::after {
+        border: none;
+      }
+      .btn-button {
+        width: 456rpx;
+        height: 94rpx;
+        background-color: #f1bf07;
+        border-radius: 47rpx;
+        line-height: 94rpx;
+        font-size: 40rpx;
+        color: #fff;
+        text-align: center;
+        &::after {
+          border: none;
+        }
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="exam-wrapper">
+    <view class="top">
+      <view class="avatarUrl">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+      <view class="nickName">
+        <open-data type="userNickName"></open-data>
+      </view>
+    </view>
+    <view class="regular" @tap="handleShowRegular">活动规则 ></view>
+    <image class="banner" src="{{postUrl}}" />
+    <!-- 用户没有参与过本活动且没有用户手机号 -->
+    <button class="btn" wx:if="{{needPhoneNumber}}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">免费领取</button>
+    <form class="btn" wx:if="{{!needPhoneNumber}}" report-submit="true" @submit="handleStartActive">
+      <button class="btn-button " formType="submit">免费领取</button>
+    </form>
+    <Pop />
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Pop from '../../components/pop' // 弹出层
+  import {
+    getActiveInfo,
+    startCollage
+  } from '@/api'
+  import {
+    staticUrl,
+    throttle
+  } from '@/utils'
+  import checkSessionMixIn from '@/mixins/checkSession'
+  import getPhoneNumberMixIn from '@/mixins/getPhoneNumber'
+  import reportMixIn from '@/mixins/report'
+  export default class exam extends wepy.page {
+    config = {}
+    components = {
+      Pop
+    }
+    data = {
+      staticUrl,
+      popS: false,
+      needPhoneNumber: false,
+      postUrl: ''
+    }
+    computed = {}
+    watch = {}
+    mixins = [
+      getPhoneNumberMixIn,
+      checkSessionMixIn,
+      reportMixIn
+    ]
+    methods = {
+      handleStartActive: throttle(this.handleStartActive),
+      async getPhoneNumber(e) {
+        console.log(`当前时间 ${Date.now()}: debug 的数据是 e: `, e)
+        try {
+          const info = await this.getPhoneNumber(e)
+          this.startCollage(info)
+        } catch (error) {
+          console.log(`当前时间 ${Date.now()}: debug 的数据是 error: `, error)
+        }
+      },
+      handleShowRegular() {
+        this.jump = false
+        this.$invoke('Pop', 'show-pop', {
+          title: '活动规则',
+          content: [
+            '1.发起助力活动或者参加好友的拼团活动;',
+            '2.在活动时间内邀请好友拼团;',
+            '3.若活动成功，活动发起者和拼团参与者均可前往个人中心—我的订单查看活动资源;',
+            '4.若未在指定时间内完成拼团，则活动失败。可重新发起活动，每个用户最多可发起2次活动。'
+          ]
+        })
+      }
+    }
+    events = {}
+    onLoad(option) {
+      this.init(option)
+    }
+    onShow() {}
+    onUnload() {}
+    // ==========  自定义函数必须写在这个之后  =====================================
+    init(option) {
+      this.activeId = option.activeId
+      this.getActiveInfo(this.activeId)
+    }
+    async startCollage(data) {
+      // 上报手机号之前 检查会话
+      if (data) await this.checkSession()
+      const {
+        _id
+      } = await startCollage({
+        data,
+        activeId: this.activeId
+      })
+      this.goToCollage(_id)
+    }
+    // 开团
+    handleStartActive(e) {
+      this.reportFormId(e)
+      if (this.hasFail2Time) {
+        this.jump = true
+        this.$invoke('Pop', 'show-pop', {
+          content: '本轮活动您已累计发起2次，超过发起次数最大限额！去关注其他爆款活动吧～',
+          cb: this.goHome.bind(this)
+        })
+      } else {
+        this.startCollage()
+      }
+    }
+    goHome() {
+      wepy.redirectTo({
+        url: '/pages/home/index'
+      })
+    }
+    async getActiveInfo(activeId) {
+      const {
+        needPhoneNumber,
+        hasFail2Time,
+        status,
+        collageId,
+        postUrl,
+        slogan
+      } = await getActiveInfo({
+        activeId
+      })
+      wepy.setNavigationBarTitle({
+        title: slogan
+      })
+      if (status === 'underWay' || status === 'succeed') this.goToCollage(collageId)
+      this.slogan = slogan
+      this.needPhoneNumber = needPhoneNumber
+      this.hasFail2Time = hasFail2Time
+      this.postUrl = postUrl
+      this.$apply()
+    }
+    goToCollage(collageId) {
+      wepy.redirectTo({
+        url: `/pages/details/index?collageId=${collageId}`
+      })
+    }
+    // ==========  用户分享 =====================================================
+    onShareAppMessage() {
+      return {
+        title: '领取 · 免费课程',
+        imageUrl: `https://res.new.sunlands.site/share.jpg`,
+        path: '/pages/home/index'
+      }
+    }
+  }
+
+</script>

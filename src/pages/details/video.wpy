@@ -1,0 +1,219 @@
+<template>
+  <view class="video-wrapper">
+    <view class="video-box">
+      <video src="{{sourceUrl}}" poster="{{postUrl}}"></video>
+    </view>
+    <view class="info-wrapper">
+      <scroll-view class="info-box" scroll-y="true">
+        <view class="title">
+          {{slogan}}
+        </view>
+        <view class="teacher-info">
+          <view class="name">
+            主讲人: {{teacher}}
+          </view>
+          <view class="list">
+            <view class="item" wx:for="{{teacherIntroduction}}" wx:key="index">{{item}}</view>
+          </view>
+        </view>
+        <view class="course-info">
+          <view class="name">
+            课程简介
+          </view>
+          <view class="list">
+            <view class="item" wx:for="{{courseIntroduction}}" wx:key="{{index}}">{{item}}</view>
+          </view>
+        </view>
+        <view class="catalog-info">
+          <view class="name">
+            知识剧透
+          </view>
+          <block wx:for="{{catalogIntroduction}}" wx:key="{{index}}">
+            <view class="subname">
+              {{item.name}}
+            </view>
+            <view class="list">
+              <view class="item" wx:for="{{item.list}}" wx:for-index="idx" wx:for-item="itm" wx:key="{{idx}}">{{itm}}</view>
+            </view>
+          </block>
+        </view>
+        <view class="knowledge-info">
+          <view class="name">
+            知识延伸
+          </view>
+          <view class="list">
+            <view class="item">微信关注【尚德伴读】公众号</view>
+            <view class="item">了解最新自考资讯 领取更多免费干货</view>
+            <view class="bandu-wrapper">
+              <image class="bandu" @tap="handlePreviewImage" src="https://res.new.sunlands.site/video/bandu.jpg"></image>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+    staticUrl
+  } from '@/utils'
+  import {
+    getLessonInfo
+  } from '@/api'
+  export default class video extends wepy.page {
+    config = {}
+    components = {}
+    data = {
+      staticUrl,
+      teacher: '',
+      slogan: '',
+      sourceUrl: '',
+      postUrl: '',
+      courseIntroduction: [],
+      teacherIntroduction: [],
+      catalogIntroduction: []
+    }
+    computed = {}
+    watch = {}
+    mixins = []
+    methods = {
+      handlePreviewImage() {
+        wepy.previewImage({
+          urls: ['https://res.new.sunlands.site/video/bandu.jpg']
+        })
+      }
+    }
+    events = {}
+    onLoad(option) {
+      this.init(option)
+    }
+    onShow() {}
+    onUnload() {}
+    // ==========  自定义函数必须写在这个之后  =====================================
+    init(option) {
+      const {
+        lessonId
+      } = option
+      this.getLessonInfo(lessonId)
+    }
+    async getLessonInfo(lessonId) {
+      const {
+        courseInfo: {
+          slogan,
+          courseIntroduction,
+          teacher,
+          teacherIntroduction,
+          catalogIntroduction
+        },
+        lessonInfo: {
+          sourceUrl,
+          postUrl
+        }
+      } = await getLessonInfo({
+        lessonId
+      })
+      this.slogan = slogan
+      this.sourceUrl = sourceUrl
+      this.postUrl = postUrl
+      this.courseIntroduction = courseIntroduction
+      this.catalogIntroduction = catalogIntroduction
+      this.teacher = teacher
+      this.teacherIntroduction = teacherIntroduction
+      this.$apply()
+    }
+  }
+</script>
+
+<style lang='less'>
+  .video-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .video-box {
+      width: 100%;
+      height: 420rpx;
+      video {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .info-wrapper {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .info-box {
+        width: 654rpx;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 0 42rpx;
+        box-sizing: border-box;
+        height: 95%;
+        border-radius: 10rpx;
+        .title {
+          width: 100%;
+          height: 130rpx;
+          line-height: 130rpx;
+          font-size: 30rpx;
+          color: #444;
+          margin-bottom: 44rpx;
+          border-bottom: 3rpx solid #ebebeb;
+        }
+        .teacher-info,
+        .course-info,
+        .catalog-info,
+        .knowledge-info {
+          margin-bottom: 38rpx;
+          .name {
+            width: 100%;
+            height: 40rpx;
+            line-height: 40rpx;
+            border-left: 6rpx solid #fecb6b;
+            padding-left: 26rpx;
+            font-size: 26rpx;
+            color: #454545;
+            margin-bottom: 22rpx;
+          }
+          .list {
+            .item {
+              line-height: 50rpx;
+              color: #666;
+              font-size: 22rpx;
+            }
+          }
+        }
+        .catalog-info {
+          .subname {
+            font-size: 22rpx;
+            height: 50rpx;
+            line-height: 50rpx;
+            color: #444;
+          }
+          .list {
+            padding-bottom: 24rpx;
+            margin-bottom: 30rpx;
+            border-bottom: 3rpx dashed #dcdcdc;
+          }
+        }
+        .knowledge-info {
+          margin-bottom: 0;
+          .list {
+            .bandu-wrapper {
+              width: 100%;
+              height: 312rpx;
+              image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,121 @@
+<style lang="less">
+  .discount {
+    padding: 0 50rpx;
+    .tab {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      view {
+        align-items: flex-star;
+        font-size: 30rpx;
+        color: #999999;
+        font-family: '微软雅黑';
+        margin-right: 1rpx;
+        line-height: 130rpx;
+      }
+      #tab-hd01 {
+        flex: 1;
+        text-align: center;
+      }
+      #tab-hd02 {
+        flex: 1;
+        text-align: center;
+      }
+      #tab-hd03 {
+        flex: 1;
+        text-align: center;
+      }
+      .active {
+        position: relative;
+        color: #000;
+        font-weight: bolder;
+        font-size: 36rpx;
+        &:after {
+          content: '';
+          display: block;
+          width: 32rpx;
+          height: 21rpx;
+          position: absolute;
+          bottom: 10rpx;
+          left: 60rpx;
+          background-image: url(/images/selected.png);
+          background-position: 0 0;
+          background-size: 100% 100%;
+        }
+      }
+    }
+    .tab-con {
+      .list-wrap {
+        display: none;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .discount-icon {
+        width: 273rpx;
+        height: 263rpx;
+        display: block;
+        margin: 300rpx auto 0;
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="discount">
+    <view class="tab clearfix" @tap="tabFun">
+      <view class="{{tabArr.curHdIndex=='0'? 'active' : ''}}" id="tab-hd01" data-id="0">未使用</view>
+      <view class="{{tabArr.curHdIndex=='1'? 'active' : ''}}" id="tab-hd02" data-id="1">已使用</view>
+      <view class="{{tabArr.curHdIndex=='2'? 'active' : ''}}" id="tab-hd03" data-id="2">已过期</view>
+    </view>
+    <view class="tab-con">
+      <image wx:if="{{staticUrl}}" class="discount-icon" src="{{staticUrl}}/images/discount-icon.png" />
+      <!-- <view class="{{tabArr.curBdIndex=='0'? 'active' : ''}} list-wrap ">
+        </view>
+        <view class=" {{tabArr.curBdIndex=='1'? 'active' : ''}} list-wrap">
+        </view>
+        <view class=" {{tabArr.curBdIndex=='2'? 'active' : ''}} list-wrap">
+        </view> -->
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+    staticUrl
+  } from '@/utils'
+  export default class discount extends wepy.page {
+    config = {}
+    data = {
+      tabArr: {
+        curHdIndex: 0,
+        curBdIndex: 0
+      },
+      res: {
+        all: [],
+        Istarted: [],
+        Ijoined: []
+      },
+      listArr: []
+    }
+    onLoad() {}
+    methods = {
+      tabFun(e) {
+        // 获取触发事件组件的dataset属性
+        // console.log(e)
+        var _datasetType = e.target.dataset.id
+        // console.log('----' + _datasetType + '----')
+        var _obj = {}
+        _obj.curHdIndex = _datasetType
+        _obj.curBdIndex = _datasetType
+        this.tabArr = _obj
+      }
+    }
+    computed = {
+      staticUrl() {
+        return staticUrl
+      }
+    }
+  }
+</script>

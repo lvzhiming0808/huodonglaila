@@ -1,0 +1,59 @@
+<style type="css">
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+  page {
+    background: #f7f7f7;
+    border-top: 1px solid #f7f7f7;
+    width: 100%;
+    height: 100%;
+  }
+  view {
+    padding: 0;
+    margin: 0;
+  }
+</style>
+
+<script>
+  require('./utils/ald-stat.js')
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/home/index',
+        'pages/reduceActivity/index',
+        'pages/detailskanjia/index',
+        'pages/mine/index',
+        'pages/source/index',
+        'pages/details/index',
+        'pages/details/course-list',
+        'pages/details/video',
+        'pages/discount/index',
+        'pages/exam/index',
+        'pages/active/index'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: '活动来啦',
+        navigationBarTextStyle: 'black',
+        backgroundColor: '#f7f7f7'
+      }
+    };
+    globalData = {
+      orderId: null
+    };
+    constructor() {
+      super()
+      this.use('promisify')
+      this.use('requestfix')
+    }
+    onLaunch() {}
+  }
+</script>

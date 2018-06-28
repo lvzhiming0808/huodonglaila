@@ -1,0 +1,264 @@
+<style lang="less">
+  .tag-wrapper {
+    width: 100%;
+    height: 86rpx;
+    display: flex;
+    padding-top: 47rpx;
+    justify-content: space-around;
+    .tag-item {
+      font-size: 30rpx;
+      color: #b4b4b4;
+      position: relative;
+      flex: 1;
+      text-align: center;
+      line-height: 28rpx;
+      .tip {
+        display: none;
+        width: 32rpx;
+        height: 21rpx;
+        z-index: 200;
+        position: absolute;
+        left: 50%;
+        bottom: 20rpx;
+        transform: translateX(-50%);
+      }
+      &.active {
+        color: #000;
+        font-weight: bolder;
+        font-size: 36rpx; // background-image: url("../../../images/selected.png");
+        &>.tip {
+          display: block;
+        }
+      }
+    }
+  }
+  .time-limit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 110rpx;
+    font-size: 30rpx;
+    font-weight: bolder;
+    color: #2b2a2a;
+    .time-img {
+      display: inline-block;
+      width: 40rpx;
+      height: 40rpx;
+      margin-right: 14rpx;
+      vertical-align: middle;
+    }
+  }
+  .tab-wrapper {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .wrapper {
+      height: 236rpx;
+      background: #fff;
+      border-radius: 12rpx;
+      margin: 0rpx 15rpx 28rpx 15rpx;
+      padding: 0 20rpx;
+      //background: #E6493A;
+      box-shadow: 0 5rpx 14rpx 0 rgba(0, 0, 0, .05); 
+      .cont-wrapper{
+        background:none;
+        border-radius: 0rpx;
+        overflow: hidden;
+        padding: 0;
+        &:after {
+          border: none;
+        }
+      }
+      .wrapper-img {
+        float:left;
+        width:180rpx;
+        height:180rpx;
+        margin-right:24rpx;
+        border-radius:8rpx;
+        margin-top: 28rpx;
+      }
+      .wrapper-fr {
+        position: relative;
+        float: left;
+        width: 476rpx;
+        height: 225rpx;
+        margin-top: 3rpx;
+        text-align:left;
+        .wrapper-title {
+          margin: 6rpx 0 0rpx 0;
+          font-size: 30rpx;
+          font-weight: bolder;
+          color: #1d1d1d;
+          height:55rpx;
+        }
+        .wrapper-subtitle {
+          font-size: 24rpx;
+          color: #999;
+        }
+        .wrapper-label {
+          position: absolute;
+          left: 0;
+          bottom: 16rpx;
+          font-size: 24rpx;
+          color: #999;
+          .xianshi{
+            color: #f2231b;
+          }
+        }
+        .wrapper-main {
+          position: absolute;
+          right: 0;
+          bottom: 20rpx;
+          .foemidbnt {
+            width:168rpx;
+            line-height: 60rpx;
+            text-align: center;
+            font-size: 28rpx;
+            font-weight: bolder;
+            color: #fefefe;
+            background: linear-gradient(to right,#fd4716, #f2211c);
+            border-radius: 10rpx;
+          }
+        }
+      }
+    }
+    .btmtip {
+      font-size: 20rpx;
+      color: #bababa;
+      margin-bottom: 40rpx;
+    } 
+  }
+</style>
+
+<template>
+<view>
+  <view class="time-limit">
+    <image class="time-img" src="https://r.sunlands.site/activity-coming/cp/res/icon/process/xsfl_icon.png?v=1"></image>
+    <text>限时福利</text>
+  </view>
+  <view class="tab-wrapper">
+    <view class="wrapper"  wx:for="{{kjList}}" wx:key="{{index}}">
+      <form report-submit="true"  @submit="toBargain({{item.id}}, {{index + 1}})">
+        <button formType="submit" class="cont-wrapper" style="bordeer:none !important">
+          <image class="wrapper-img" src="{{item.bannerHome}}"></image>
+          <view class="wrapper-fr">
+            <view class="wrapper-title">{{item.slogan}}</view>
+            <view class="wrapper-subtitle">{{item.sketch}}</view>
+            <view class="wrapper-label">
+              <text style="text-decoration:line-through;color:#999">
+                <text style="color: #999;">￥{{item.costPrice}}</text>
+              </text>
+              <text class="xianshi"> 限时0元</text>
+            </view>
+            <!-- <view class="wrapper-main"  @tap="toBargain({{item.id}})">去领取</view> -->
+            <view class="wrapper-main">
+              <button class="foemidbnt">去领取</button>
+            </view>
+          </view>
+        </button>
+      </form>
+    </view>
+    <view class='btmtip'>没有更多活动啦！</view>
+  </view>
+  <!-- <view class="tag-wrapper">
+    <view class="tag-item {{currentIndex === 0 ? 'active' : ''}}" @tap="handleChangeTab({{0}})">
+      限时福利
+      <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+    </view>
+    <view class="tag-item {{currentIndex === 1 ? 'active' : ''}}" @tap="handleChangeTab({{1}})">
+      职场技能
+      <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+    </view>
+    <view class="tag-item {{currentIndex === 2 ? 'active' : ''}}" @tap="handleChangeTab({{2}})">
+      学历干货
+      <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+    </view>
+  </view>
+  <view class="tab-wrapper">
+    <repeat for="{{list}}" key="index">
+      <Item :item.sync="item"></Item>
+    </repeat>
+    <view class='btmtip'>没有更多活动啦！</view>
+  </view> -->
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { kanjia } from '@/api/home'
+  import { staticUrl, throttle } from '@/utils'
+  import Item from './item'
+  import reportMixIn from '@/mixins/report'
+  export default class Tab extends wepy.component {
+    data = {
+      staticUrl,
+      currentIndex: 0,
+      list: [],
+      kjList: [],
+      costPrice: '',
+      type: 'KanJia'
+    };
+    props = {
+      isClick: Boolean
+      // selfExamination: Array,
+      // workSkill: Array,
+      // timeLimitWelfare: Array
+    }
+    components = {
+      Item
+    };
+    mixins = [
+      reportMixIn
+    ]
+    onLoad() {
+      this.kanjia()
+    }
+    onShow() {
+  
+    }
+    methods = {
+      handleChangeTab(index) {
+        this.handleChangeTab(index)
+      },
+      showFirst() {
+        this.handleChangeTab(0)
+      },
+      toBargain: throttle(this.toBargain)
+    }
+    toBargain(val, index, e) {
+      this.$parent.$wxapp.aldstat.sendEvent('首页活动卡片', { ID: index + '' })
+      // console.log(this.isClick, 'child isClick 1')
+      this.reportFormId(e)
+      // console.log(this.isClick, 'child isClick 2')
+      if (this.isClick) {
+        wepy.navigateTo({
+          url: '/pages/detailskanjia/index?id=' + val
+        })
+      }
+    }
+    async kanjia() {
+      const res = await kanjia({
+        method: 'GET',
+        data: {
+          type: this.type
+        }
+      })
+      this.kjList = []
+      for (var i = 0; i < res.timeLimitWelfare.length; i++) {
+        this.costPrice = (res.timeLimitWelfare[i].costPrice / 100)
+        res.timeLimitWelfare[i].costPrice = this.costPrice
+        this.kjList.push(res.timeLimitWelfare[i])
+      }
+      this.$apply()
+      return Promise.resolve()
+    }
+    handleChangeTab(index) {
+      var inds = ['timeLimitWelfare', 'workSkill', 'selfExamination']
+      this.list = this[inds[index]]
+      this.currentIndex = index
+    }
+  }
+</script>

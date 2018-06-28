@@ -1,0 +1,568 @@
+<style lang='less'>
+  .details-wrapper {
+    width: 100%;
+    height: 100%;
+    .banner {
+      width: 750rpx;
+      height: 358rpx;
+      background: #fff;
+      .slide-image {
+        width: 750rpx;
+        height: 358rpx;
+      }
+    }
+    .top {
+      height: 154rpx;
+      background: #fff;
+      padding: 0 22rpx;
+      margin-bottom: 18rpx;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .title-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 28rpx;
+        font-size: 28rpx;
+        color: #222;
+        .title-wrapper-label {
+          width: 138rpx;
+          height: 40rpx;
+          margin-left: 18rpx;
+          line-height: 40rpx;
+          text-align: center;
+          font-size: 24rpx;
+          color: #f35149;
+          border: 1px solid #f35149;
+          border-radius: 10rpx;
+        }
+      }
+      .time-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .surplus {
+          width: 66rpx;
+          height: 40rpx;
+          line-height: 40rpx;
+          text-align: center;
+          font-size: 22rpx;
+          color: #fff;
+          background: #ff4713;
+          border-radius: 8rpx;
+        }
+        .time {
+          width: 348rpx;
+          margin-right: 188rpx;
+          font-size: 26rpx;
+          color: #222;
+          .timer {
+            margin-right: 8rpx;
+            font-size: 34rpx;
+            font-weight: bold;
+            color: #f35149;
+          }
+        }
+        .originalPrice {
+          text-decoration:line-through;
+          font-size: 30rpx;
+          color: #f35149;
+        }
+      }
+    }
+    .main-warp {
+      width: 100%;
+      .slide-image {
+        display: block;
+        width: 100%;
+      }
+    }
+    .failed-twotime-msg {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .pop-bd {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #565656;
+        opacity: 0.8;
+      }
+      .pop-main {
+        display: flex;
+        flex-direction: column; 
+        justify-content: center;
+        align-items: center;
+        width: 550rpx;
+        position: relative;
+        padding: 50rpx 30rpx;
+        z-index: 10;
+        background: #fff;
+        border-radius: 15rpx;
+        .pop-top {
+          display: flex;
+          width: 347rpx;
+          margin: 0 auto;
+          font-size: 36rpx;
+          font-weight: bold;
+          color: #333333;
+          border-bottom: 1px solid #f3f3f3;
+          justify-content: center;
+          padding-bottom: 30rpx;
+          view {
+            width: auto;
+            padding: 0 20rpx;
+            text-align: center;
+          }
+          image {
+            width: 32rpx;
+            height: 21rpx;
+            vertical-align: middle;
+            display: inline-block;
+            margin: 18rpx 0rpx;
+          }
+        }
+        .pop-top-exceed{
+          font-size:28rpx;
+          margin-top:50rpx;
+          color: #333;
+        }
+        .pop-top-text{
+          margin-top:15rpx;
+          font-size:28rpx;
+          color: #333;
+        }
+        .close {
+          position:absolute;
+          right:0rpx;
+          top:0rpx;
+          image {
+            width: 33rpx;
+            height: 33rpx;
+            margin: 20rpx;
+          }
+        }
+        .bttom-btn {
+          padding:0rpx 30rpx;
+          line-height: 55rpx;
+          text-align: center;
+          border-radius: 28rpx;
+          font-size: 28rpx;
+          color: #ff6e4c;
+          margin: 0 auto;
+          margin-top: 50rpx;
+          border-top: 1px solid #ff6e4c;
+          border-bottom: 1px solid #ff6e4c;
+          border-left: 1px solid #ff6e4c;
+          border-right: 1px solid #ff6e4c;
+        }
+      }
+    }
+    .failed-expired-hours {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .activeover{
+        font-size: 28rpx;
+        color: #333;
+        margin-top: 50rpx;
+        line-height: 30rpx;
+      }
+      .guanzhu{
+        font-size: 28rpx;
+        color: #333;
+        margin-top: 15rpx;
+      }
+      .huoqu{
+        font-size: 28rpx;
+        color: #333;
+        margin-bottom: 80rpx;
+        margin-top: 15rpx;
+      }
+      .pop-bd {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #565656;
+        opacity: 0.8;
+      }
+      .pop-main {
+        display: flex;
+        flex-direction: column; 
+        justify-content: center;
+        align-items: center;
+        width: 550rpx;
+        position: relative;
+        padding: 50rpx 30rpx;
+        z-index: 10;
+        background: #fff;
+        border-radius: 15rpx;
+        .pop-top {
+          display: flex;
+          width: 347rpx;
+          margin: 0 auto;
+          font-size: 36rpx;
+          font-weight: bold;
+          color: #333333;
+          border-bottom: 1px solid #f3f3f3;
+          justify-content: center;
+          padding-bottom: 30rpx;
+          view {
+            width: auto;
+            padding: 0 20rpx;
+            text-align: center;
+          }
+          image {
+            width: 32rpx;
+            height: 21rpx;
+            vertical-align: middle;
+            display: inline-block;
+            margin: 18rpx 0rpx;
+          }
+        }
+        .close {
+          position:absolute;
+          right:0rpx;
+          top:0rpx;
+          image {
+            width: 33rpx;
+            height: 33rpx;
+            margin: 20rpx;
+          }
+        }
+        .bttom-btn {
+          padding:0rpx 30rpx;
+          line-height: 55rpx;
+          text-align: center;
+          border-radius: 28rpx;
+          font-size: 28rpx;
+          color: #ff6e4c;
+          margin: 0 auto;
+          border-top: 1px solid #ff6e4c;
+          border-bottom: 1px solid #ff6e4c;
+          border-left: 1px solid #ff6e4c;
+          border-right: 1px solid #ff6e4c;
+        }
+      }
+    }
+    .wrapper-bd {
+      height: 100rpx;
+    }
+    .btn {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100rpx;
+      line-height: 100rpx;
+      text-align: center;
+      color: #fff;
+      font-size: 36rpx;
+      background: #fc3813;
+      border-radius: 0;
+    }
+  }
+</style>
+
+<template>
+  <view class="details-wrapper">
+    <view class="banner">
+      <image src="{{postUrl}}" class="slide-image" />
+    </view>
+    <view class="top">
+      <view class="title-wrapper">
+        <view style="font-weight:bolder;">{{title}}</view>
+        <view class="title-wrapper-label">砍价免费拿</view>
+      </view>
+      <view class="time-wrapper">
+        <view class="surplus">剩余</view>
+        <view class="time">
+          <text class="timer">{{day}}</text>天
+          <text class="timer">{{hours}}</text>时
+          <text class="timer">{{minutes}}</text>分
+          <text class="timer">{{seconds}}</text>秒
+        </view>
+        <view class="originalPrice">￥{{orgPrice}}</view>
+      </view>
+    </view>
+    <view class="main-warp" wx:for="{{imgUrl}}" wx:key="{{index}}">
+      <image src="{{item}}" class="slide-image" mode="widthFix" />
+    </view>
+    <view wx:if="{{failedTwoMsg}}" class="failed-twotime-msg">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handleFailedTwoTimeMsgClose"><image src="../../images/close.png"></view>
+        <view class="pop-top">
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+          <view>{{titleMsg}}</view>
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+        </view>
+        <view class="pop-top-exceed">本轮活动您已累计发起两次,</view>
+        <view class="pop-top-text">超过发起次数最大限额!</view>
+        <view class="pop-top-text">去关注其他爆款活动吧!</view>
+        <view @tap="handleFaildTwoTimeBtn" class="bttom-btn">{{cutMsgBtn}}</view>
+      </view>
+    </view>
+    <view wx:if="{{expired5Hours}}" class="failed-expired-hours">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handleFailedExpiredMsgClose"><image src="../../images/close.png"></view>
+        <view class="pop-top">
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+          <view>提示</view>
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+        </view>
+        <view class="activeover">活动已结束</view>
+        <view class="guanzhu">关注【尚德机构有话说】公众号</view>
+        <view class="huoqu">获取更多免费课程福利</view>
+        <view @tap="handleExpiredFiveTimes" class="bttom-btn">查看我的订单</view>
+      </view>
+    </view>
+    <view class="wrapper-bd"></view>
+    <form report-submit="true" bindsubmit="reportFormId">
+      <button wx:if="{{needPhoneNumber}}" class="btn" form-type="submit" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">发起砍价</button>
+      <button wx:if="{{!needPhoneNumber && !latestOrderId}}" class="btn" form-type="submit" @tap="handleAlreadyCut">发起砍价</button>
+      <button wx:if="{{!needPhoneNumber && latestOrderId}}" class="btn" form-type="submit" @tap="handleAlreadyCut">查看砍价详情</button>
+    </form>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+   kanjiaDetail,
+   fqCutPrice
+  } from '@/api/home'
+  import {
+    staticUrl
+  } from '@/utils'
+  import checkSessionMixIn from '@/mixins/checkSession'
+  import getPhoneNumberMixIn from '@/mixins/getPhoneNumber'
+  import reportMixIn from '@/mixins/report'
+  export default class details extends wepy.page {
+    config = {
+    }
+    data = {
+      imgUrl: [],
+      postUrl: '',
+      title: '',
+      day: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      titleLabel: '',
+      orgPrice: '',
+      activeId: '',
+      needPhoneNumber: '',
+      titleMsg: '',
+      cutMsgBtn: '',
+      latestOrderId: '',
+      optionId: '',
+      lateTime: '',
+      timer: null,
+      failedTwoMsg: false,
+      staticUrl,
+      expired5Hours: false
+    }
+    computed = {}
+    watch = {}
+    mixins = [
+      getPhoneNumberMixIn,
+      checkSessionMixIn,
+      reportMixIn
+    ]
+    onLoad(option) {
+      this.day = 0
+      this.hours = 0
+      this.minutes = 0
+      this.seconds = 0
+      this.optionId = option.id
+      console.log(`当前时间 ${Date.now()} : onLoad`)
+    }
+    onShow() {
+      this.init(this.optionId)
+      console.log(`当前时间 ${Date.now()} onShow : ${this.$parent.globalData.orderId} : ${this.optionId}`)
+    }
+    methods = {
+      async getPhoneNumber(e) {
+        this.$parent.$wxapp.aldstat.sendEvent('活动介绍页', { ID: this.optionId })
+        console.log(`当前时间 ${Date.now()}: debug 的数据是 e: `, e)
+        try {
+          const info = await this.getPhoneNumber(e)
+          this.startCollage(info)
+        } catch (error) {
+          console.log(`当前时间 ${Date.now()}: debug 的数据是 error: `, error)
+        }
+      },
+      reportFormId(e) {
+        this.reportFormId(e)
+      },
+      handleAlreadyCut(e) {
+        this.$parent.$wxapp.aldstat.sendEvent('活动介绍页', { ID: this.optionId })
+        if (this.latestOrderId) {
+          this.handleCutPrice(this.latestOrderId)
+        } else {
+          this.handleSendCutPrice()
+        }
+      },
+      handleExpiredFiveTimes() {
+        wx.navigateTo({
+          url: '/pages/source/index'
+        })
+      },
+      handleFailedTwoTimeMsgClose() {
+        this.failedTwoMsg = false
+      },
+      handleFaildTwoTimeBtn() {
+        this.failedTwoMsg = false
+      },
+      handleFailedExpiredMsgClose() {
+        this.expired5Hours = false
+      }
+    }
+    // ==========  自定义函数必须写在这个之后  =====================================
+    async init(id) {
+      this.imgUrl = []
+      this.latestOrderId = ''
+      this.activeId = ''
+      this.postUrl = ''
+      this.day = 0
+      this.hours = 0
+      this.minutes = 0
+      this.seconds = 0
+      const res = await kanjiaDetail({
+        method: 'GET',
+        data: {
+          activityId: id
+        }
+      })
+      this.latestOrderId = res.latestOrderId
+      this.needPhoneNumber = res.needPhoneNumber
+      this.activeId = res.id
+      this.imgUrl = res.detailImages
+      this.postUrl = res.postUrl
+      this.title = res.slogan
+      this.titleLabel = res.sketch
+      this.lateTime = res.countdown
+      this.orgPrice = (res.costPrice / 100)
+      this.timestampToTime(res.countdown)
+      this.$apply()
+      return Promise.resolve()
+    }
+    async startCollage(data) {
+      // 上报手机号之前 检查会话
+      if (data) await this.checkSession()
+      const res = await fqCutPrice({
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: {
+          activityId: this.activeId,
+          encryptedData: data.encryptedData,
+          iv: data.iv
+        }
+      })
+      console.log(res, `当前时间 ${Date.now()} 的砍价数据：`)
+      if (this.lateTime > 18000000) {
+        this.handleCutPrice(res.orderId)
+      } else {
+        this.expired5Hours = true
+        this.needPhoneNumber = false
+      }
+      this.$apply()
+      return Promise.resolve()
+    }
+    async handleSendCutPrice() {
+      const res = await fqCutPrice({
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: {
+          activityId: this.activeId,
+          encryptedData: '',
+          iv: ''
+        }
+      })
+      if (res.status === 'success') {
+        this.handleCutPrice(res.orderId)
+      } else if (res.status === 'failed2Times') {
+        this.titleMsg = '提示'
+        this.cutMsgBtn = '我知道啦'
+        this.failedTwoMsg = true
+      } else if (res.status === 'expired5Hours') {
+        this.titleMsg = '提示'
+        this.cutMsgBtn = '查看我的订单'
+        this.expired5Hours = true
+      }
+      this.$apply()
+      return Promise.resolve()
+    }
+    timestampToTime(timestamp) {
+      if (timestamp < 1000) return
+      if (this.timer) clearTimeout(this.timer)
+      const shake = () => {
+        this.timer = setTimeout(async() => {
+          if (timestamp > 1000) {
+            shake(timestamp)
+          } else {
+            this.expired5Hours = true
+            console.log(`当前时间 ${Date.now()}: 代码走到了这里`)
+          }
+          const day = parseInt(timestamp / (1000 * 60 * 60 * 24))
+          const hours = parseInt((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+          const minutes = parseInt((timestamp % (1000 * 60 * 60)) / (1000 * 60))
+          const seconds = parseInt((timestamp % (1000 * 60)) / 1000)
+          timestamp -= 1000
+          this.day = this.day === (day > 9 ? day : '0' + day) ? this.day : day > 9 ? day : '0' + day
+          this.hours = this.hours === (hours > 9 ? hours : '0' + hours) ? this.hours : hours > 9 ? hours : '0' + hours
+          this.minutes = this.minutes === (minutes > 9 ? minutes : '0' + minutes) ? this.minutes : minutes > 9 ? minutes : '0' + minutes
+          this.seconds = seconds > 9 ? seconds : '0' + seconds
+          this.$apply()
+        }, 1000)
+      }
+      shake(timestamp)
+    }
+    onUnload() {
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+    }
+    handleCutPrice(orderId) {
+      wepy.navigateTo({
+        url: '/pages/reduceActivity/index?orderId=' + orderId
+      })
+    }
+    goHome() {
+      wepy.redirectTo({
+        url: '/pages/home/index'
+      })
+    }
+    // ==========  用户分享 =====================================================
+    // onShareAppMessage() {
+    //   console.log(`/pages/home/index?type=shareCollage&redirectUrl=/pages/details/index&collageId=${this.collageId}`)
+    //   return {
+    //     title: '免费领取这份秘密课程只差你了快来帮我助力一下！',
+    //     path: `/pages/home/index?type=shareCollage&redirectUrl=/pages/details/index&collageId=${this.collageId}`
+    //   }
+    // }
+  }
+</script>
+

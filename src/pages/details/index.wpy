@@ -1,0 +1,582 @@
+<style lang='less'>
+  .details-wrapper {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #f7f7f7;
+    .top {
+      height: 220rpx;
+      background: #fff;
+      padding: 60rpx 50rpx 0;
+      display: flex;
+      justify-content: space-between;
+      .left {
+        display: flex;
+        width: 390rpx;
+        .header {
+          position: relative;
+          width: 150rpx;
+          height: 150rpx;
+          background: pink;
+          border-radius: 15rpx;
+          overflow: hidden;
+          margin-right: 30rpx;
+          &-img {
+            width: 150rpx;
+            height: 150rpx;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+          }
+          .bd {
+            width: 150rpx;
+            height: 36rpx;
+            opacity: 0.4;
+            position: absolute;
+            background: #000;
+            left: 0;
+            bottom: 0;
+          }
+          .text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            line-height: 36rpx;
+            font-size: 22rpx;
+            color: #fff;
+          }
+        }
+        .con {
+          .num {
+            font-size: 30rpx;
+            color: #444444;
+            margin-top: 8rpx;
+          }
+          .tip {
+            font-size: 22rpx;
+            color: #999999;
+            margin-top: 5rpx;
+          }
+        }
+        .icon-box {
+          width: 153rpx;
+          height: 21rpx;
+          position: relative;
+          margin-top: 30rpx;
+          image {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            right: 0;
+          }
+          view {
+            font-size: 24rpx;
+            color: #666666;
+            text-align: center;
+            line-height: 21rpx;
+          }
+        }
+      }
+      .right {
+        width: 175rpx;
+        .time-box {
+          width: 171rpx;
+          height: 46rpx;
+          position: relative;
+        }
+        .time-bd {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        .num-box {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          font-size: 26rpx;
+          color: #fff;
+          margin-right: -18rpx;
+          .timer-element {
+            position: relative;
+            width: 46rpx;
+            height: 46rpx;
+            .timer-bg {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              z-index: 1;
+            }
+            .count {
+              width: 100%;
+              height: 100%;
+              display: flex;
+              position: absolute;
+              justify-content: center;
+              align-items: center;
+              z-index: 2;
+            }
+          }
+          view {
+            display: inline-block;
+            width: 46rpx;
+            text-align: center;
+            margin-right: 17rpx;
+            line-height: 46rpx;
+          }
+          view.second {
+            margin-right: 0;
+          }
+        }
+        .img-box {
+          position: relative;
+          .list {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 22rpx;
+            width: 171rpx;
+            height: 80rpx;
+            border-radius: 10rpx;
+            overflow: hidden;
+            position: absolute;
+            z-index: 2;
+            .list-img {
+              width: 80rpx;
+              height: 80rpx;
+              border-radius: 10rpx;
+              display: block;
+            }
+          }
+          .list-bd {
+            position: absolute;
+            width: 171rpx;
+            top: 22rpx;
+            display: flex;
+            justify-content: space-between;
+            height: 80rpx;
+            .bd {
+              width: 80rpx;
+              height: 80rpx;
+              line-height: 80rpx;
+              font-size: 30rpx;
+              color: #fff;
+              text-align: center;
+              background: #e1e1e1;
+              border-radius: 10rpx;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+    }
+    .main-warp {
+      padding: 48rpx 50rpx 0;
+    }
+    .main {
+      background: #fff;
+      padding: 55rpx 40rpx 70rpx;
+      border-radius: 15rpx;
+      .title(@color: #ffc973) {
+        width: 100%;
+        font-size: 30rpx;
+        color: #444444;
+        text-indent: 20rpx;
+        border-left: 5rpx solid @color;
+        line-height: 40rpx;
+        height: 40rpx;
+        margin-bottom: 30rpx;
+      }
+      .activity-con {
+        display: flex;
+        flex-wrap: wrap;
+        width: 570rpx;
+        justify-content: space-between;
+        .title {
+          .title();
+        }
+        .left {
+          width: 181rpx;
+          height: 130rpx;
+          display: block;
+        }
+        .right {
+          width: 360rpx;
+          .slogan {
+            font-size: 30rpx;
+            color: #444444;
+            margin-top: 3rpx;
+          }
+          .sketch {
+            font-size: 24rpx;
+            color: #999999;
+            margin-top: 3rpx;
+            margin-bottom: 10rpx;
+          }
+          .tip {
+            font-size: 24rpx;
+            color: #666666;
+          }
+        }
+      }
+      .activity-process {
+        .title {
+          .title(#71d8d2);
+          margin-top: 60rpx;
+        }
+        .list {
+          font-size: 23rpx;
+          color: #999999;
+          line-height: 40rpx;
+        }
+      }
+    }
+    .btn {
+      width: 650rpx;
+      height: 80rpx;
+      line-height: 80rpx;
+      text-align: center;
+      color: #fff;
+      font-size: 36rpx;
+      background: #ff6e4c;
+      margin: 45rpx auto 0;
+      border-radius: 40rpx;
+    }
+  }
+</style>
+
+<template>
+  <view class="details-wrapper">
+    <view class="top">
+      <view class="left">
+        <view class="header">
+          <image class="header-img" src="{{master.avatarUrl}}" />
+          <view class="bd"></view>
+          <view class="text">团长</view>
+        </view>
+        <view class="con" wx:if="{{status === 'underWay'}}">
+          <view class="num">还差{{lastPeople}}人参团</view>
+          <view class="tip">分享给更多好友组团</view>
+          <view class="icon-box">
+            <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/sanjiao.png" />
+            <view>拼团中</view>
+          </view>
+        </view>
+        <view class="con" wx:elif="{{status === 'succeed'}}">
+          <view class="num">共3人拼团</view>
+          <view class="tip">活动成功</view>
+          <view class="icon-box">
+            <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/sanjiao.png" />
+            <view>已结束</view>
+          </view>
+        </view>
+        <view class="con" wx:else>
+          <view class="num">活动超时未完成</view>
+          <view class="tip">活动失败</view>
+          <view class="icon-box">
+            <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/sanjiao.png" />
+            <view>已结束</view>
+          </view>
+        </view>
+      </view>
+      <view class="right">
+        <view class="time-box">
+          <view class="num-box" wx:if="{{showTime}}">
+            <view class="timer-element hour">
+              <image class="timer-bg" wx:if="{{staticUrl}}" src="{{staticUrl}}/images/timer/timer-bg.png" />
+              <text class="count"> {{hours}} </text>
+            </view>
+            <view class="timer-element minute">
+              <image class="timer-bg" wx:if="{{staticUrl}}" src="{{staticUrl}}/images/timer/timer-bg.png" />
+              <text class="count"> {{minutes}} </text>
+            </view>
+            <view class="timer-element second">
+              <image class="timer-bg" wx:if="{{staticUrl}}" src="{{staticUrl}}/images/timer/timer-bg.png" />
+              <text class="count"> {{seconds}} </text>
+            </view>
+          </view>
+        </view>
+        <view class="img-box">
+          <view class="list">
+            <image wx:for="{{member}}" wx:key="{{item.avatarUrl}}" class="list-img" src="{{item.avatarUrl}}" />
+          </view>
+          <view class="list-bd">
+            <view class="bd"> 空</view>
+            <view class="bd"> 空</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="main-warp">
+      <view class="main">
+        <view class="activity-con">
+          <view class="title">活动内容</view>
+          <image class="left" src="{{bannerOrder}}" />
+          <view class="right">
+            <view class="slogan">{{slogan}}</view>
+            <view class="sketch">{{sketch}}</view>
+            <view class="tip">{{ slogan === '10 分钟掌握英语发音诀窍' ? '价值 109 元 | 3 人拼团免费领' : '价值 129 元 | 3 人拼团免费领' }}</view>
+          </view>
+        </view>
+        <view class="activity-process">
+          <view class="title">活动流程</view>
+          <view class="list">1.发起助力活动或者参加好友的拼团活动; </view>
+          <view class="list">2.在活动时间内邀请好友拼团; </view>
+          <view class="list">3.若活动成功，活动发起者和拼团参与者均可前往个人中心—我的订单查看活动资源; </view>
+          <view class="list">4.若未在指定时间内完成拼团，则活动失败。可重新发起活动，每个用户最多可发起2次活动。</view>
+        </view>
+      </view>
+    </view>
+    <button wx:if="{{act === 'invite'}}" open-type="share" class="btn">邀请好友参团</button>
+    <view wx:if="{{act === 'getcourse'}}" @tap="handleGetCourse" class="btn">查看课程</view>
+    <button wx:if="{{act === 'join' && needPhoneNumber}}" open-type="getPhoneNumber" @getphonenumber="getphonenumberJoin" class="btn">加入拼团</button>
+    <button wx:if="{{act === 'join' && !needPhoneNumber}}" @tap="showCantJoin" class="btn">加入拼团</button>
+    <button wx:if="{{act === 'startNewOne' && !needPhoneNumber}}" @tap="startNewOne" class="btn">重新发起活动</button>
+    <button wx:if="{{act === 'startNewOne' && needPhoneNumber}}" open-type="getPhoneNumber" @getphonenumber="getphonenumberStartNewOne" class="btn">重新发起活动</button>
+    <Pop />
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+    staticUrl,
+    throttle
+  } from '@/utils'
+  import {
+    getCollageInfo,
+    joinCollage,
+    startCollage
+  } from '@/api'
+  import Pop from '../../components/pop'
+  import getPhoneNumberMinxin from '@/mixins/getPhoneNumber'
+  import checkSessionMinxin from '@/mixins/checkSession'
+  export default class details extends wepy.page {
+    config = {};
+    components = {
+      Pop
+    };
+    data = {
+      staticUrl,
+      hours: '00',
+      minutes: '00',
+      seconds: '00',
+      sketch: '',
+      master: {},
+      bannerOrder: '',
+      slogan: '',
+      member: [],
+      act: '',
+      lastPeople: 0,
+      showTime: false,
+      needPhoneNumber: false,
+      status: ''
+    };
+    computed = {};
+    watch = {};
+    mixins = [getPhoneNumberMinxin, checkSessionMinxin];
+    methods = {
+      showCantJoin() {
+        this.$invoke('Pop', 'show-pop', {
+          content: '您已经是老用户了，给新用户一些机会吧',
+          cb: this.goHome.bind(this)
+        })
+      },
+      handleGetCourse: throttle(this.handleGetCourse),
+      async getphonenumberJoin(e) {
+        try {
+          const info = await this.getPhoneNumber(e)
+          if (info.iv) {
+            this.joinCollage(info)
+          }
+        } catch (error) {}
+      },
+      async getphonenumberStartNewOne(e) {
+        try {
+          const info = await this.getPhoneNumber(e)
+          if (info.iv) {
+            this.startNewOne(info)
+          }
+        } catch (error) {}
+      },
+      startNewOne: throttle(this.startNewOne),
+      popHanleConfirm() {
+        wepy.redirectTo({
+          url: '/pages/home/index'
+        })
+      }
+    };
+    onLoad(option) {
+      this.init(option)
+    }
+    onUnload() {
+      // 销毁页面清除定时器
+      if (this.timer) {
+        clearTimeout(this.timer)
+        this.timer = null
+      }
+    }
+    // ==========  自定义函数必须写在这个之后  =====================================
+    init(option) {
+      this.collageId = option.collageId
+      this.getCollageInfo(this.collageId)
+    }
+    async getCollageInfo(collageId) {
+      const {
+        joinInfo,
+        collageInfo
+      } = await getCollageInfo({
+        collageId
+      })
+      this.updateJoinInfo(joinInfo)
+      this.analyseCollageInfo(collageInfo)
+      this.$apply()
+    }
+    async joinCollage(data) {
+      await this.checkSession()
+      const {
+        status
+      } = await joinCollage({
+        data,
+        collageId: this.collageId
+      })
+      if (status === 'succeed') {
+        this.getCollageInfo(this.collageId)
+      } else if (status === 'failed') {
+        this.showFailedJoin()
+      }
+    }
+    async startNewOne(data) {
+      await this.checkSession()
+      const {
+        status,
+        _id
+      } = await startCollage({
+        data,
+        activeId: this.activeId
+      })
+      if (status === 'succeed') {
+        console.log(`当前时间 ${Date.now()}: 代码走到了这里 创建拼团成功`)
+        this.collageId = _id
+        this.getCollageInfo(_id)
+      } else if (status === 'failed2Times') {
+        this.showFailed2Times()
+      } else {
+        this.showFailedUnderWay()
+      }
+    }
+    // 当前拼拼团已经成功或失败
+    showFailedJoin() {
+      this.$invoke('Pop', 'show-pop', {
+        content: '当前拼团已结束，去首页看看其他拼团把',
+        cb: this.goHome.bind(this)
+      })
+    }
+    // 如果当前用户已经在本活动中失败超过两次
+    showFailed2Times() {
+      this.$invoke('Pop', 'show-pop', {
+        content: '本轮活动您已累计失败2次，超过参与次数最大限额！去关注其他爆款活动吧～',
+        cb: this.goHome.bind(this)
+      })
+    }
+    // 如果当前用户正在参与本活动或者已成功
+    showFailedUnderWay() {
+      this.$invoke('Pop', 'show-pop', {
+        content: '您已经是老用户了，给新用户一些机会吧',
+        cb: this.goHome.bind(this)
+      })
+    }
+    goHome() {
+      wepy.redirectTo({
+        url: '/pages/home/index'
+      })
+    }
+    updateJoinInfo(joinInfo) {
+      this.master = joinInfo.filter(person => person.isMaster)[0]
+      this.member = joinInfo.filter(person => !person.isMaster)
+    }
+    analyseCollageInfo(collageInfo) {
+      const {
+        status,
+        type,
+        slogan,
+        bannerOrder,
+        sketch,
+        canJoin,
+        showTime,
+        lastTime,
+        act,
+        courseId,
+        lastPeople,
+        hadJoined,
+        needPhoneNumber,
+        activeId
+      } = collageInfo
+      this.showTime = showTime
+      this.status = status
+      this.lastPeople = lastPeople
+      this.type = type
+      this.slogan = slogan
+      this.bannerOrder = bannerOrder
+      this.sketch = sketch
+      this.canJoin = canJoin
+      this.courseId = courseId
+      this.needPhoneNumber = needPhoneNumber
+      this.activeId = activeId
+      this.act = act
+      if (hadJoined) {
+        this.$invoke('Pop', 'show-pop', {
+          content: '您已经参加过该活动，去首页看看其他活动把～',
+          cb: this.goHome.bind(this)
+        })
+      }
+      this.$apply()
+      console.log(`当前时间 ${Date.now()}: debug 的数据是 showTime: `, showTime)
+      if (showTime) this.startTime(lastTime)
+    }
+    startTime(lastTime) {
+      if (this.timer) clearTimeout(this.timer)
+      const shake = () => {
+        this.timer = setTimeout(() => {
+          const hours = parseInt((lastTime / (1000 * 60 * 60)))
+          const minutes = parseInt((lastTime % (1000 * 60 * 60)) / (1000 * 60))
+          const seconds = parseInt((lastTime % (1000 * 60)) / 1000)
+          lastTime -= 1000
+          this.hours = hours > 9 ? hours : '0' + hours
+          this.minutes = minutes > 9 ? minutes : '0' + minutes
+          this.seconds = seconds > 9 ? seconds : '0' + seconds
+          this.$apply()
+          if (lastTime > 1000) {
+            shake(lastTime)
+          } else {
+            this.status = 'failed'
+            this.showTime = false
+            this.act = 'startNewOne'
+            this.$apply()
+          }
+        }, 1e3)
+      }
+      shake(lastTime)
+    }
+    handleGetCourse() {
+      wepy.navigateTo({
+        url: `/pages/details/course-list?courseId=${this.courseId}`
+      })
+    }
+    // ==========  用户分享 =====================================================
+    onShareAppMessage() {
+      console.log(`/pages/home/index?type=shareCollage&redirectUrl=/pages/details/index&collageId=${this.collageId}`)
+      return {
+        title: '免费领取这份秘密课程只差你了快来帮我助力一下！',
+        path: `/pages/home/index?type=shareCollage&redirectUrl=/pages/details/index&collageId=${this.collageId}`
+      }
+    }
+  }
+</script>
+

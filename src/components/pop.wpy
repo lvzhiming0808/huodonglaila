@@ -1,0 +1,149 @@
+<style lang="less">
+  .pop-wrapper {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .pop-bd {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: #565656;
+      opacity: 0.8;
+    }
+    .pop-main {
+      width: 550rpx;
+      position: relative;
+      padding: 50rpx 30rpx;
+      z-index: 10;
+      background: #fff;
+      border-radius: 15rpx;
+      .pop-top {
+        display: flex;
+        width: 347rpx;
+        margin: 0 auto;
+        font-size: 36rpx;
+        font-weight: bold;
+        color: #333333;
+        border-bottom: 1px solid #f3f3f3;
+        justify-content: center;
+        padding-bottom: 30rpx;
+        view {
+          width: auto;
+          margin-top: 10rpx;
+          text-align: center;
+        }
+      }
+      image {
+        width: 32rpx;
+        height: 21rpx;
+        vertical-align: middle;
+        display: inline-block;
+        margin: 30rpx;
+      }
+      .center-text {
+        font-size: 26rpx;
+        line-height: 30rpx;
+        color: #333333;
+        padding: 20rpx 0 40rpx;
+      }
+      .bttom-btn {
+        padding:0rpx 30rpx;
+        line-height: 55rpx;
+        text-align: center;
+        border-radius: 28rpx;
+        font-size: 28rpx;
+        color: #ff6e4c;
+        margin: 0 auto;
+        border-top: 1px solid #ff6e4c;
+        border-bottom: 1px solid #ff6e4c;
+        border-left: 1px solid #ff6e4c;
+        border-right: 1px solid #ff6e4c;
+      }
+      .close{
+        position:absolute;
+        right: 0rpx;
+        top: 0rpx;
+        image{
+          width: 33rpx;
+          height: 33rpx;
+          margin: 20rpx;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view wx:if="{{show}}" class="pop-wrapper">
+    <view class="pop-bd"></view>
+    <view class="pop-main">
+      <view class="close" @tap="closet"><image src="../../images/close.png"></view>
+      <view class="pop-top">
+        <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+        <view>{{title}}</view>
+        <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+      </view>
+      <view class="center-text" wx:if="{{contentType === 'string'}}">
+        {{content}}
+      </view>
+      <view class="center-text" wx:else>
+        <view wx:for="{{content}}" wx:key="{{item}}" style="color: #666; line-height: 40rpx;margin-bottom: 10rpx;" >{{item}}</view>
+      </view>
+      <view @tap="off" class="bttom-btn">{{btn}}</view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import {
+    staticUrl
+  } from '@/utils'
+  export default class Pop extends wepy.component {
+    components = {}
+    data = {
+      staticUrl,
+      title: '',
+      content: '',
+      show: false,
+      contentType: 'string',
+      btn: '我知道了',
+      cb: () => {}
+    }
+    props = {}
+    computed = {}
+    watch = {}
+    mixins = []
+    methods = {
+      off() {
+        this.show = false
+        this.$emit('handle-confirm')
+        this.cb()
+      },
+      'show-pop'({ title = '提示', content = '', btn = '我知道了', cb = () => {} } = {}) {
+        this.contentType = typeof content
+        console.log(this.contentType, 'this.contentType')
+        this.title = title
+        this.content = content
+        this.show = true
+        this.cb = cb
+        this.btn = btn
+      },
+      closet() {
+        this.show = false
+      }
+    }
+    events = {}
+    onLoad() {
+      this.init()
+    }
+    // ==========  自定义函数必须写在这之后  =======================================
+    init() {}
+  }
+</script>

@@ -1,0 +1,319 @@
+<style lang='less'>
+  .home-wrapper {
+    width: 100%;
+    height: auto;
+    padding-bottom: 100rpx;
+  }
+  .accredit {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 20000;
+    &-bd {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      opacity: 0.5;
+    }
+    &-main {
+      width: 480rpx;
+      height: 480rpx;
+      background: #fff;
+      border-radius: 10rpx;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      margin-left: -240rpx;
+      margin-top: -240rpx;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      .img {
+        width: 363rpx;
+        height: 289rpx;
+        margin: 40rpx auto 0;
+        display: block;
+      }
+      .accredit-btn {
+        width: 138rpx;
+        height: 56rpx;
+        background: none;
+        border: solid 1rpx #ff6e4c;
+        border-radius: 27rpx;
+        line-height: 55rpx;
+        font-size: 28rpx;
+        color: #ff6e4c;
+        margin-top: 45rpx;
+      }
+    }
+  }
+  .clearfix {
+    zoom: 1;
+    &:after {
+      clear: both;
+      display: block;
+      height: 0;
+      content: "\200B"
+    }
+  }
+  .fl {
+    float: left
+  }
+  .fr {
+    float: right
+  }
+  .nav-wrapper {
+    width: 100%;
+    height: 98rpx;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid #f2f2f2;
+  }
+  .tab {
+    .clearfix;
+    .btn {
+      .fl;
+      width: 50%;
+      text-align: center;
+      font-size: 22rpx;
+      color: #e2dad8;
+      view {
+        width: 100%;
+      }
+    }
+    .active {
+      color: #ff7f4c;
+    }
+    image {
+      width: 40rpx;
+      height: 40rpx;
+      margin-top: 15rpx;
+    }
+  }
+</style>
+
+
+<template>
+  <view class="wrapper">
+    <view class="home-wrapper" hidden="{{!showHome}}">
+      <view class="accredit" wx:if="{{showAuthBtn}}">
+        <view class="accredit-bd"></view>
+        <view class="accredit-main">
+          <image wx:if="{{staticUrl}}" class="img" src="{{staticUrl}}/images/accredit.png" />
+          <button class="accredit-btn" open-type="getUserInfo" @getuserinfo="getuserinfo">开启</button>
+        </view>
+      </view>
+      <banner :isClick.sync="isClick"></banner>
+      <Active :isClick.sync="isClick"></Active>
+    </view>
+    <view class="personal" hidden="{{showHome}}">
+      <view class="top">
+        <view class="avatarUrl">
+          <open-data type="userAvatarUrl"></open-data>
+        </view>
+        <view class="nickName">
+          <open-data type="userNickName"></open-data>
+        </view>
+      </view>
+      <view class="list">
+        <view @tap="toSource" class="source item">
+          <view class="line"></view>
+          <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/source.png" />
+          <view class="text">我的订单</view>
+          <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/arrow.png" class="arrow"></image>
+        </view>
+        <view @tap="toDiscount" class="coupon item">
+          <view class="line"></view>
+          <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/coupon.png" />
+          <view class="text">我的优惠券</view>
+          <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/arrow.png" class="arrow"></image>
+        </view>
+        <button open-type="contact" class="contact-us item">
+          <view class="line"></view>
+          <image  wx:if="{{staticUrl}}" src="{{staticUrl}}/images/contact-us.png"  />
+          <view class="text">联系我们</view>
+          <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/arrow.png" class="arrow"></image>
+        </button>
+      </view>
+    </view>
+    <!-- <Nav :showHome.sync="showHome" @toggle-layout.user="toggleLayout"></Nav> -->
+    <view class="nav-wrapper">
+      <view class="tab">
+        <view @tap="handleClick({{1}})" class="btn">
+          <image wx:if="{{staticUrl}}" class="icon" src="{{showHome ? staticUrl+'/images/icon_index_press.png' : staticUrl+'/images/icon_index.png'}}" />
+          <view class="{{showHome ? 'active' : ''}}">主页</view>
+        </view>
+        <view @tap="handleClick({{0}})" class="btn">
+          <image wx:if="{{staticUrl}}" class="icon" src="{{!showHome? staticUrl+'/images/icon_personal_press.png' : staticUrl+'/images/icon_personal.png'}}" />
+          <view class="{{!showHome? 'active' : ''}}">我的</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Banner from './components/banner' // banner图
+  import Active from './components/active' // tab切换
+  // import Nav from './components/tab' // tab切换
+  import {
+    logIn,
+    updateUserInfo,
+    staticUrl
+  } from '@/utils'
+  // import {
+  //   bannerList,
+  //   activeList
+  // } from '@/api'
+  // import {
+  //   banner,
+  //   kanjia
+  // } from '@/api/home'
+  export default class Home extends wepy.page {
+    config = {}
+    components = {
+      banner: Banner,
+      Active
+    };
+    data = {
+      showHome: true,
+      bannerList: [],
+      selfExamination: [],
+      timeLimitWelfare: [],
+      workSkill: [],
+      showAuthBtn: false,
+      isClick: false
+    };
+    computed = {
+      staticUrl() {
+        return staticUrl
+      }
+    };
+    watch = {};
+    mixins = [];
+    methods = {
+      getuserinfo(info) {
+        this.getuserinfo(info)
+      },
+      // toggleLayout(showHome) {
+      //   this.showHome = showHome
+      //   this.$apply()
+      //   console.log(showHome, `${Date.now()} : debugger index`)
+      // },
+      handleClick(showHome) {
+        // this.$emit('toggle-layout', !!showHome)
+        // this.$apply()
+        this.showHome = showHome
+        this.$apply()
+        console.log(showHome, `${Date.now()} : debugger`)
+      },
+      toSource() {
+        wepy.navigateTo({
+          url: '/pages/source/index'
+        })
+      },
+      toDiscount() {
+        wepy.navigateTo({
+          url: '/pages/discount/index'
+        })
+      }
+    };
+    events = {};
+    onLoad(option) {
+      if (!option.type) {
+        option.type = 'default'
+      }
+  
+      try {
+        this.$parent.$wxapp.aldstat.sendEvent('活动首页入口来源', { index_source: option.type })
+      } catch (e) {
+        console.log('Error: ' + e)
+      }
+
+      this.init(option)
+    }
+    onShow() {}
+    onUnload() {}
+    // ==========  自定义函数必须写在这个之后  =====================================
+    async init(option) {
+      this.option = option
+      await this.checkOutLogin()
+    }
+    async checkOutLogin() {
+      // console.log(this.isClick, 'parent isClick 1')
+      // const wxLoginState = await wepy.checkSession().then(res => { return true }, res => { return false })
+      // console.log(wxLoginState, 'checkSession')
+      // if (!wxLoginState) {
+      await logIn(this.option.orderId ? this.option.orderId : '', true, this.toggleAuthBtn.bind(this))
+      this.isClick = true
+      // } else {
+      //   this.isClick = true
+      //   this.readyGo()
+      // }
+      // console.log(this.isClick, 'parent isClick 2')
+      this.$apply()
+    }
+    getuserinfo(info) {
+      if (info.detail.errMsg === 'getUserInfo:fail auth deny') return
+      const {
+        detail: {
+          iv,
+          encryptedData
+        }
+      } = info
+      updateUserInfo({
+        iv,
+        encryptedData
+      },
+        this.toggleAuthBtn.bind(this)
+      )
+      this.$apply()
+    }
+    toggleAuthBtn(show) {
+      this.showAuthBtn = show
+      if (!show) {
+        this.readyGo()
+      }
+      this.$apply()
+    }
+    readyGo() {
+      if (this.option.type && this.option.type.indexOf('activity_detail') === 0) {
+        this.option.type = 'activity_detail'
+      }
+      switch (this.option.type) {
+        // 通过砍价分享和成功消息推送进入小程序跳转
+        case 'shareCollage':
+        case 'messageCollage':
+          wepy.navigateTo({
+            url: `${this.option.redirectUrl}?orderId=${this.option.orderId}`
+          })
+          break
+        case 'activity_detail':
+          wepy.navigateTo({
+            url: `${this.option.redirectUrl}?id=${this.option.activityId}`
+          })
+          break
+      }
+    }
+    // ==========  用户分享 =====================================================
+    onShareAppMessage() {
+      return {
+        title: '领取 · 免费课程',
+        imageUrl: staticUrl + `/images/share.jpg?v=1`,
+        path: '/pages/home/index'
+      }
+    }
+    computed = {
+      staticUrl() {
+        return staticUrl
+      }
+    }
+  }
+</script>
+

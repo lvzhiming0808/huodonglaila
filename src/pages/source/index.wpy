@@ -1,0 +1,482 @@
+<style lang="less">
+  .source {
+    .line(@color: #ffc973) {
+      width: 5rpx;
+      height: 40rpx;
+      display: inline-block;
+      margin-right: 20rpx;
+      vertical-align: middle;
+      background: @color;
+    }
+    .tab {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      display: flex;
+      justify-content: space-around;
+      view {
+        flex: 1;
+        align-items: flex-star;
+        font-size: 30rpx;
+        color: #999999;
+        font-family: '微软雅黑';
+        margin-right: 1rpx;
+        line-height: 130rpx;
+        text-align: center;
+        padding: 0 20rpx;
+        .tip {
+          display: none;
+          width: 32rpx;
+          height: 21rpx;
+          z-index: 200;
+          position: absolute;
+          left: 50%;
+          bottom: 20rpx;
+          transform: translateX(-50%);
+        }
+      }
+      .active {
+        position: relative;
+        color: #000;
+        font-weight: bolder;
+        font-size: 36rpx;
+        .tip {
+          display: block;
+        }
+      }
+    }
+
+    .tab-con {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .wrapper {
+        background: #fff;
+        border-radius: 10rpx;
+        margin: 0rpx 15rpx 28rpx 15rpx;
+        padding: 0 20rpx 28rpx 20rpx;
+        box-shadow: 0 5rpx 14rpx 0 rgba(0, 0, 0, .05);
+        .wrapper-datatime{
+          font-size: 24rpx;
+          color: #999;
+          float: left;
+        }
+        .wrapper-activitystate{
+          font-size: 24rpx;
+          float:right;
+          color: #f2231b;
+        }
+        .wrapper-activitystate-fail{
+          font-size: 24rpx;
+          float:right;
+          color: #999;
+        }
+        .wrpper-border{
+          border-bottom: 1px solid #f2f2f2;
+          margin-bottom: 28rpx;
+          overflow: hidden;
+          line-height: 56rpx;
+        }
+        .wrapper-img {
+          float: left;
+          width: 180rpx;
+          height: 180rpx;
+          margin-right: 24rpx;
+          clear: both;
+          border-radius: 8rpx;
+        }
+        .wrapper-fr {
+          position: relative;
+          float: left;
+          width: 458rpx;
+          height: 180rpx;
+          .wrapper-title {
+            font-weight: bolder;
+            margin: 6rpx 0 14rpx 0;
+            font-size: 30rpx;
+            color: #1d1d1d;
+          }
+          .wrapper-subtitle {
+            font-size: 24rpx;
+            color: #999;
+          }
+          .wrapper-label {
+            position: absolute;
+            left: 0;
+            bottom: 16rpx;
+            font-size: 24rpx;
+            color: #999;
+            .xianshi{
+              color: #f2231b;
+            }
+          }
+          .wrapper-main {
+            position: absolute;
+            right: 0;
+            bottom: 4rpx;
+            width:168rpx;
+            line-height: 60rpx;
+            text-align: center;
+            font-size: 24rpx;
+            font-weight: bolder;
+            color: #fefefe;
+            background: linear-gradient(to right,#fd4716, #f2211c);
+            border-radius: 10rpx;
+          }
+        }
+      }
+    }
+    .btmtip {
+      text-align: center;
+      font-size: 20rpx;
+      color: #bababa;
+      height: 60rpx;
+    }
+  }
+</style>
+
+<template>
+  <view class="source">
+    <view class="tab clearfix" @tap="tabFun">
+      <view class="{{tabArr.curHdIndex=='0'? 'active' : ''}}" id="tab-hd01" data-id="0" @tap="openAllOrder">全部订单
+        <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+      </view>
+      <view class="{{tabArr.curHdIndex=='1'? 'active' : ''}}" id="tab-hd02" data-id="1" @tap="openHaveOrder">进行中
+        <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+      </view>
+      <view class="{{tabArr.curHdIndex=='2'? 'active' : ''}}" id="tab-hd03" data-id="2" @tap="openSuccessOrder">已成功
+        <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+      </view>
+      <view class="{{tabArr.curHdIndex=='3'? 'active' : ''}}" id="tab-hd04" data-id="3" @tap="openFailOrder">未成功
+        <image class="tip" src="{{staticUrl}}/images/selected.png"></image>
+      </view>
+    </view>
+    <view wx:if="{{cutPriceList.length}}" class="tab-con">
+       <view class="wrapper"  wx:for="{{cutPriceList}}" wx:key="{{index}}">
+         <view class="wrpper-border">
+          <view class="wrapper-datatime">{{item.launchDateTime}}</view>
+          <view class="{{item.orderStatus !== '砍价失败' ? 'wrapper-activitystate' : 'wrapper-activitystate-fail'}}">{{item.orderStatus}}</view>
+         </view>
+        <image class="wrapper-img" src="{{item.activity.bannerHome}}"></image>
+        <view class="wrapper-fr">
+          <view class="wrapper-title">{{item.activity.slogan}}</view>
+          <view class="wrapper-subtitle">{{item.activity.sketch}}</view>
+          <view class="wrapper-label">
+            <span>原价{{item.activity.costPrice}}</span>
+          </view>
+          <view class="wrapper-main" @tap="toBargain({{item.orderId}})">查看详情</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{cutPriceList.length}}" class='btmtip'>没有更多活动啦！</view>
+    <view wx:if="{{!cutPriceList.length}}" style="display: flex;width: 100%; height: 500rpx;justify-content: flex-end; align-items: center;flex-direction: column;">
+      <image wx:if="{{staticUrl}}" style="width: 271rpx;height: 247rpx;" src="{{staticUrl}}/images/no-order.png"></image>
+      <!-- <view @tap="goHome" style="width: 313rpx; height: 55rpx; border:1rpx solid #fb6f52;border-radius: 55rpx; text-align: center; line-height: 55rpx; color: #fb6f52;font-size: 25rpx;margin-top: 50rpx;">查看更多热门活动</view> -->
+    </view>
+    <!-- <view class="tab-con">
+      <view class="{{tabArr.curBdIndex=='0'? 'active' : ''}} list-wrap ">
+        <view class="item-title title-top">
+          <view class="line"></view>
+          <view class="text">进行中</view>
+          <view @tap="openUnderWay" class="btn_box">
+            <view class="tip">{{underWayFlag=='1'? '展开' : '收起'}} </view>
+            <image wx:if="{{staticUrl}}" class="icon" src="{{underWayFlag=='1'? staticUrl+'/images/fold.png' : staticUrl+'/images/unfold.png'}}" />
+          </view>
+        </view>
+        <repeat wx:if="{{index<underWayNum}}" for="{{all.underWay}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{ times[index]}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+        <view class="item-title title-center">
+          <view class="line"></view>
+          <view class="text">已成功</view>
+          <view @tap="openSucceed" class="btn_box">
+            <view class="tip"> {{succeedFlag=='1'? '展开' : '收起'}}</view>
+            <image wx:if="{{staticUrl}}" class="icon" src="{{succeedFlag=='1'? staticUrl+'/images/fold.png' : staticUrl+'/images/unfold.png'}}" />
+          </view>
+        </view>
+        <repeat wx:if="{{index<succeedNum}}" for="{{all.succeed}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{item.startTime}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+        <view class="item-title title-btm">
+          <view class="line"></view>
+          <view class="text">未成功</view>
+          <view @tap="openFailed" class="btn_box">
+            <view class="tip">{{failedFlag=='1'? '展开' : '收起'}}</view>
+            <image wx:if="{{staticUrl}}" class="icon" src="{{failedFlag=='1'? staticUrl+'/images/fold.png' : staticUrl+'/images/unfold.png'}}" />
+          </view>
+        </view>
+        <repeat wx:if="{{index<failedNum}}" for="{{all.failed}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{item.startTime}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+      </view>
+      <view class=" {{tabArr.curBdIndex=='1'? 'active' : ''}} list-wrap">
+        <repeat wx:if="{{res.underWay.length}}" for="{{res.underWay}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{item.startTime}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+        <view wx:if="{{!res.underWay.length}}" style="display: flex;width: 100%; height: 250px;justify-content: flex-end; align-items: center;flex-direction: column;">
+          <image wx:if="{{staticUrl}}" style="width: 271rpx;height: 247rpx;" src="{{staticUrl}}/images/no-order.png"></image>
+          <view @tap="goHome" style="width: 313rpx; height: 55rpx; border:1rpx solid #fb6f52;border-radius: 55rpx; text-align: center; line-height: 55rpx; color: #fb6f52;font-size: 25rpx;margin-top: 50rpx;">查看更多热门活动</view>
+        </view>
+      </view>
+      <view class=" {{tabArr.curBdIndex=='2'? 'active' : ''}} list-wrap">
+        <repeat wx:if="{{res.succeed.length}}" for="{{res.succeed}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{item.startTime}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+        <view wx:if="{{!res.succeed.length}}" style="display: flex;width: 100%; height: 500rpx;justify-content: flex-end; align-items: center;flex-direction: column;">
+          <image wx:if="{{staticUrl}}" style="width: 271rpx;height: 247rpx;" src="{{staticUrl}}/images/no-order.png"></image>
+          <view @tap="goHome" style="width: 313rpx; height: 55rpx; border:1rpx solid #fb6f52;border-radius: 55rpx; text-align: center; line-height: 55rpx; color: #fb6f52;font-size: 25rpx;margin-top: 50rpx;">查看更多热门活动</view>
+        </view>
+      </view>
+      <view class="{{tabArr.curBdIndex=='3'? 'active' : ''}} list-wrap">
+        <repeat wx:if="{{res.failed.length}}" for="{{res.failed}}" key="index" index="index" item="item">
+          <view class="item-list">
+            <image wx:if="{{staticUrl}}" class="ban" src="{{item.bannerOrder}}" />
+            <view class="title">{{item.title}}</view>
+            <view class="startTime">{{item.startTime}}</view>
+            <view class="slogan">{{item.slogan}}</view>
+            <view class="sketch">{{item.sketch}}</view>
+            <view class="btn" bindtap="toDetails({{item._id}})">查看详情</view>
+          </view>
+        </repeat>
+        <view wx:if="{{!res.failed.length}}" style="display: flex;width: 100%; height: 500rpx;justify-content: flex-end; align-items: center;flex-direction: column;">
+          <image wx:if="{{staticUrl}}" style="width: 271rpx;height: 247rpx;" src="{{staticUrl}}/images/no-order.png"></image>
+          <view @tap="goHome" style="width: 313rpx; height: 55rpx; border:1rpx solid #fb6f52;border-radius: 55rpx; text-align: center; line-height: 55rpx; color: #fb6f52;font-size: 25rpx;margin-top: 50rpx;">查看更多热门活动</view>
+        </view>
+      </view>
+    </view> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { cutPriceList } from '@/api/home'
+  import time from '../../utils/formatTime.js'
+  import { staticUrl } from '@/utils'
+  export default class source extends wepy.page {
+    config = {
+    }
+    data = {
+      tabArr: {
+        curHdIndex: 0,
+        curBdIndex: 0
+      },
+      underWayNum: '2', // 展示条数
+      underWayFlag: '1', // 第几次点击标识
+      succeedNum: '2',
+      succeedFlag: '1',
+      failedNum: '2',
+      failedFlag: '1',
+      res: {
+        underWay: [],
+        succeed: [],
+        failed: []
+      },
+      all: {
+        underWay: [],
+        succeed: [],
+        failed: []
+      },
+      cutPriceList: [],
+      orderAllList: [],
+      doneList: [],
+      processingList: [],
+      unfinishedList: []
+    }
+    onLoad() {}
+    onShow() {
+      this.tabArr = {
+        curHdIndex: 0,
+        curBdIndex: 0
+      }
+      this.init()
+      this.cutprlist()
+      this.$apply()
+    }
+    init() {
+
+    }
+    async cutprlist() {
+      this.orderAllList = []
+      this.cutPriceList = []
+      const res = await cutPriceList({
+        method: 'GET'
+      })
+      this.doneList = res.doneList
+      this.processingList = res.processingList
+      this.unfinishedList = res.unfinishedList
+      if (res.doneList.length) {
+        res.doneList.map(item => {
+          this.orderAllList.push(item)
+        })
+      }
+      if (res.processingList.length) {
+        res.processingList.map(item => {
+          this.orderAllList.push(item)
+        })
+      }
+      if (res.unfinishedList.length) {
+        res.unfinishedList.map(item => {
+          this.orderAllList.push(item)
+        })
+      }
+      this.handleOrderData(this.orderAllList)
+      this.handleOrderData2(this.orderAllList, this.cutPriceList)
+      this.$apply()
+      return Promise.resolve()
+    }
+    handleOrderData(oldVal) {
+      for (var i = 0; i < oldVal.length; i++) {
+        oldVal[i].activity.costPrice = (oldVal[i].activity.costPrice / 100)
+        oldVal[i].launchDateTime = time.formatTime(oldVal[i].launchDateTime, 'M-D h:m')
+        if (oldVal[i].orderStatus === 'Processing') {
+          oldVal[i].orderStatus = '砍价进行中'
+        } else if (oldVal[i].orderStatus === 'Unfinished') {
+          oldVal[i].orderStatus = '砍价失败'
+        } else if (oldVal[i].orderStatus === 'Done') {
+          oldVal[i].orderStatus = '砍价成功'
+        }
+      }
+    }
+    handleOrderData2(oldVal, newVal) {
+      for (var i = 0; i < oldVal.length; i++) {
+        newVal.push(oldVal[i])
+      }
+    }
+    Format(date, fmt) {
+      var o = {
+        'M+': date.getMonth() + 1, // 月份
+        'd+': date.getDate(), // 日
+        'h+': date.getHours(), // 小时
+        'm+': date.getMinutes(), // 分
+        's+': date.getSeconds(), // 秒
+        'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+        'S': date.getMilliseconds() // 毫秒
+      }
+      if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+      for (var k in o) { if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length))) }
+      return fmt
+    }
+    methods = {
+      openAllOrder() {
+        this.cutPriceList = []
+        this.handleOrderData2(this.orderAllList, this.cutPriceList)
+        this.$apply()
+      },
+      openHaveOrder() {
+        this.cutPriceList = []
+        this.handleOrderData2(this.processingList, this.cutPriceList)
+        this.$apply()
+      },
+      openSuccessOrder() {
+        this.cutPriceList = []
+        this.handleOrderData2(this.doneList, this.cutPriceList)
+        this.$apply()
+      },
+      openFailOrder() {
+        this.cutPriceList = []
+        this.handleOrderData2(this.unfinishedList, this.cutPriceList)
+        this.$apply()
+      },
+      goHome() {
+        wepy.redirectTo({
+          url: '/pages/home/index'
+        })
+      },
+      tabFun(e) {
+        // 获取触发事件组件的dataset属性
+        var _datasetType = e.target.dataset.id
+        // console.log('----' + _datasetType + '----')
+        var _obj = {}
+        _obj.curHdIndex = _datasetType
+        _obj.curBdIndex = _datasetType
+        this.tabArr = _obj
+      },
+      toDetails(id) {
+        wepy.navigateTo({
+          url: '/pages/details/index?collageId=' + id
+        })
+      },
+      openUnderWay() {
+        if (this.underWayFlag === '1') {
+          this.underWayNum = '20'
+          this.underWayFlag = '2'
+        } else {
+          this.underWayNum = '2'
+          this.underWayFlag = '1'
+        }
+      },
+      openSucceed() {
+        if (this.succeedFlag === '1') {
+          this.succeedNum = '20'
+          this.succeedFlag = '2'
+        } else {
+          this.succeedNum = '2'
+          this.succeedFlag = '1'
+        }
+      },
+      openFailed() {
+        if (this.failedFlag === '1') {
+          this.failedNum = '20'
+          this.failedFlag = '2'
+        } else {
+          this.failedNum = '2'
+          this.failedFlag = '1'
+        }
+      },
+      toBargain(val) {
+        wepy.navigateTo({
+          url: `/pages/reduceActivity/index?orderId=${val}`
+        })
+      }
+    }
+    computed = {
+      // underWayTime() {
+      //   const _this = this
+      //   this.res.underWay.forEach(function(e, index) {
+      //     _this.times[index] = time.formatTime(e.startTime, 'Y/M/D h:m:s')
+      //   })
+      // },
+      staticUrl() {
+        return staticUrl
+      }
+    }
+  }
+</script>

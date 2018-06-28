@@ -1,0 +1,136 @@
+<style lang="less">
+  page {
+    background: #f7f7f7;
+    border-top: 1px solid #f7f7f7;
+  }
+  .personal {
+    .line(@color) {
+      width: 5rpx;
+      height: 40rpx;
+      display: inline-block;
+      margin-right: 50rpx;
+      vertical-align: middle;
+      background: @color
+    }
+    padding-bottom: 98rpx;
+    height: 100%;
+    .top {
+      height: 280rpx;
+      background: #fff;
+      overflow: hidden;
+      background: url('https://res.new.sunlands.site/avatar-bg.png');
+      .avatarUrl {
+        width: 110rpx;
+        height: 110rpx;
+        margin: 62rpx auto 20rpx;
+        border-radius: 15rpx;
+        overflow: hidden;
+      }
+      .nickName {
+        font-size: 26rpx;
+        color: #666666;
+        text-align: center;
+      }
+    }
+    .list {
+      padding: 0 50rpx;
+      .source {
+        .line {
+          .line(#ffc973)
+        }
+      }
+      .coupon {
+        .line {
+          .line(#71d8d2)
+        }
+      }
+      .contact-us {
+        .line {
+          .line(#b39eff)
+        }
+      }
+      .item {
+        margin-top: 48rpx;
+        height: 100rpx;
+        background: #fff;
+        image {
+          width: 30rpx;
+          height: 30rpx;
+          vertical-align: middle;
+          margin-right: 15rpx;
+        }
+        .text {
+          display: inline;
+          line-height: 100rpx;
+          font-size: 30rpx;
+          color: #444444;
+        }
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="personal">
+    <view class="top">
+      <view class="avatarUrl">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+      <view class="nickName">
+        <open-data type="userNickName"></open-data>
+      </view>
+    </view>
+    <view class="list">
+      <view @tap="toSource" class="source item">
+        <view class="line"></view>
+        <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/source.png" />
+        <view class="text">我的订单</view>
+      </view>
+      <view @tap="toDiscount" class="coupon item">
+        <view class="line"></view>
+        <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/coupon.png" />
+        <view class="text">我的优惠券</view>
+      </view>
+      <view class="contact-us item">
+        <view class="line"></view>
+        <image wx:if="{{staticUrl}}" src="{{staticUrl}}/images/contactUs.png" />
+        <view class="text">联系我们</view>
+      </view>
+    </view>
+    <nav :page="curIndex"></nav>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Nav from '@/components/nav'
+  import {
+    staticUrl
+  } from '@/utils'
+  export default class personal extends wepy.page {
+    config = {}
+    components = {
+      nav: Nav
+    }
+    data = {
+      staticUrl,
+      nickName: '',
+      avatarUrl: '',
+      curIndex: '1'
+    }
+    events = {}
+    onLoad(option) {}
+    methods = {
+      toSource() {
+        wepy.navigateTo({
+          url: '/pages/source/index'
+        })
+      },
+      toDiscount() {
+        wepy.navigateTo({
+          url: '/pages/discount/index'
+        })
+      }
+    }
+  }
+</script>

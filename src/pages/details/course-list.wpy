@@ -1,0 +1,210 @@
+<style lang='less'>
+  .course-list-wrapper {
+    width: 100%;
+    height: 100%;
+    .course-banner {
+      width: 100%;
+      height: 284rpx;
+      display: block;
+    }
+    .list-warp {
+      padding: 50rpx 50rpx 0;
+      margin: 0 auto;
+    }
+    .list-main {
+      padding: 65rpx 40rpx 65rpx;
+      background: #fff;
+      width: 570rpx;
+      border-radius: 15rpx;
+    }
+    .title {
+      width: 570rpx;
+      display: flex;
+      justify-content: space-between;
+      .text {
+        width: 450rpx;
+        font-size: 30rpx;
+        color: #444444;
+        font-weight: bold;
+        border-left: 5rpx solid #ffc973;
+        line-height: 40rpx;
+        text-indent: 15rpx;
+      }
+      .share {
+        width: 85rpx;
+        height: 36rpx;
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+        background: transparent;
+        &::after {
+          border: none;
+        }
+        .share-btn {
+          width: 85rpx;
+          height: 30rpx;
+        }
+      }
+    }
+    .list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .list-icon {
+        width: 22rpx;
+        height: 22rpx;
+        margin-top: 49rpx;
+      }
+    }
+    .con {
+      width: 530rpx;
+      border-bottom: 1px solid #ebebeb;
+      display: flex;
+      justify-content: space-between;
+      padding: 40rpx 0;
+      .left {
+        width: 450rpx;
+        .chapter {
+          font-size: 25rpx;
+          color: #444444;
+        }
+        .text {
+          margin-top: 10rpx;
+          font-size: 24rpx;
+          color: #666666;
+        }
+      }
+      .right {
+        width: 50rpx;
+        height: 50rpx;
+        display: block;
+        margin-top: 20rpx;
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="course-list-wrapper">
+    <image class="course-banner" src="{{bannerUrl}}" />
+    <view class="list-warp">
+      <view class="list-main">
+        <view class="title">
+          <view class="text">{{slogan}}</view>
+          <button open-type="share" class="share">
+                <image wx:if="{{staticUrl}}" class="share-btn" src="{{staticUrl}}/images/share.png"></image>
+              </button>
+        </view>
+        <view class="list" wx:for="{{lessonList}}" @tap="handleLessonDetail({{item}})" wx:key="{{item._id}}">
+          <image wx:if="{{staticUrl}}" class="list-icon" src="{{staticUrl}}/images/list-icon.png" />
+          <view class="con">
+            <view class="left">
+              <view class="chapter">{{item.lessonName}}</view>
+              <view class="text">{{item.slogan}}</view>
+            </view>
+            <image wx:if="{{type === 'video'}}" class="right" src="{{staticUrl}}/images/video-icon.png" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+    staticUrl,
+    throttle
+  } from '@/utils'
+  import {
+    getCourseList
+  } from '@/api'
+  export default class courseList extends wepy.page {
+    config = {
+    }
+    components = {}
+    data = {
+      staticUrl,
+      bannerUrl: '',
+      slogan: '',
+      lessonList: [],
+      type: 'video'
+    }
+    computed = {}
+    watch = {}
+    mixins = []
+    methods = {
+      handleLessonDetail: throttle(this.handleLessonDetail)
+    }
+    events = {}
+    onLoad(option) {
+      this.init(option)
+    }
+    onShow() {}
+    onUnload() {}
+    // ==========  自定义函数必须写在这个之后  =====================================
+    init(option) {
+      this.getCourseList(option.courseId)
+    }
+    async getCourseList(courseId) {
+      const {
+        bannerUrl,
+        lessonList,
+        slogan,
+        type,
+        bannerShare
+      } = await getCourseList({
+        courseId
+      })
+      this.type = type
+      this.bannerShare = bannerShare
+      this.bannerUrl = bannerUrl
+      this.lessonList = lessonList
+      this.slogan = slogan
+      // wepy.setNavigationBarTitle({
+      //   title: slogan
+      // })
+      this.$apply()
+    }
+    handleLessonDetail(lesson) {
+      if (this.type === 'video') {
+        wepy.navigateTo({
+          url: `/pages/details/video?lessonId=${lesson._id}&label=${this.slogan}`
+        })
+      } else {
+        this.openDocument(lesson.sourceUrl)
+      }
+    }
+    async openDocument(url) {
+      try {
+        wepy.showLoading({
+          title: '加载中',
+          mask: true
+        })
+        const {
+          tempFilePath
+        } = await wepy.downloadFile({
+          url
+        })
+        wepy.openDocument({
+          filePath: tempFilePath
+        })
+        wepy.hideLoading()
+      } catch (error) {
+        wepy.hideLoading()
+        wepy.showToast({
+          title: '加载失败'
+        })
+      }
+    }
+    // ==========  用户分享 =====================================================
+    onShareAppMessage(option) {
+      return {
+        title: '活动来啦邀你学习',
+        imageUrl: this.bannerShare,
+        path: '/pages/home/index'
+      }
+    }
+  }
+</script>
+

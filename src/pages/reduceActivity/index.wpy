@@ -1,0 +1,374 @@
+<template>
+  <view class="reduce-wrapper">
+    <view class="top">
+      <view class="top-main">
+        <view class="top-main-fl">
+          <image class="top-headImage" src="{{helpCutPriceList[0].helpUser.avatarUrl}}"></image>
+          <view class="helptiele">“老铁，快来帮我砍价~”</view>
+        </view>
+        <view class="top-rule" @tap="handleShowRegular">活动规则</view>
+        <Pop></Pop>
+      </view>
+      <view class="top-container">
+        <image class="top-container-img" src="{{confirmList.activity.bannerHome}}"></image>
+        <view class="top-container-fl">
+          <view class="top-title">{{confirmList.activity.slogan}}</view>
+          <view class="top-label">{{confirmList.activity.sketch}}</view>
+          <view class="top-kj">
+            <view>砍价免费领</view>
+            <view>{{confirmList.activity.totalPeople}}人已免费领</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="bg"></view>
+    <view class="cut-main">
+      <view wx:if="{{orderStatus === 'Processing'}}" class="timeContainer">
+        <image class="cut-syImg" src="https://r.sunlands.site/activity-coming/cp/res/icon/process/sytime.png?v=1"></image>
+        <view class="timecut">剩余时间</view>
+        <view class="time">{{hours}}</view>:
+        <view class="time">{{minutes}}</view>:
+        <view class="time">{{seconds}}</view>
+      </view>
+      <view wx:if="{{orderStatus === 'Done'}}" class="timeContainerSucc">
+        <image class="cut-syImg" src="https://r.sunlands.site/activity-coming/cp/res/icon/process/kjcg_icon.png?v=1"></image>
+        <view class="timecut">砍价成功</view>
+      </view>
+      <view wx:if="{{orderStatus === 'Unfinished'}}" class="timeContainerFail">
+        <image class="cut-syImg" src="https://r.sunlands.site/activity-coming/cp/res/icon/process/kjsb_icon.png?v=1"></image>
+        <view class="timecut">砍价失败</view>
+      </view>
+      <view class="cut-detail">
+        <view wx:if="{{orderStatus === 'Processing'}}" class="cut_price" style="margin-left:{{marginLeft}};background-image:url(https://r.sunlands.site/activity-coming/cp/res/icon/process/p.png?v=1);">
+          <view>已砍{{cutPrice}}</view>
+        </view>
+        <view wx:if="{{orderStatus === 'Done'}}" class="cut_price" style="margin-left: 524rpx;background-image:url(https://r.sunlands.site/activity-coming/cp/res/icon/process/s.png?v=1);">
+          <view>大写的赞</view>
+        </view>
+        <view wx:if="{{orderStatus === 'Unfinished'}}" class="cut_price" style="margin-left:{{marginLeft}};background-image:url(https://r.sunlands.site/activity-coming/cp/res/icon/process/kjsb_g.png?v=1);">
+          <view>已砍{{cutPrice}}</view>
+        </view>
+        <view wx:if="{{orderStatus === 'Processing' || orderStatus === 'Done'}}" class="progress">
+          <progress stroke-width="8" percent="{{costPricePercent}}" backgroundColor="#ededed" color="#f93918" />
+        </view>
+        <view wx:if="{{orderStatus === 'Unfinished'}}" class="progress">
+          <progress stroke-width="8" percent="{{costPricePercent}}" backgroundColor="#ededed" color="#999" />
+        </view>
+        <view class="price_con">
+          <view class="ori_price">原价¥{{originalPrice}}</view>
+          <view class="low_price">0元</view>
+        </view>
+      </view>
+    </view>
+    <view class="help_container">
+      <view class="help_list">
+        <view class="title">砍价帮</view>
+        <view class="help_item" wx:for="{{helpCutPriceList}}" wx:key="{{index}}">
+          <image class="help_img" src="{{item.helpUser.avatarUrl}}"></image>
+          <view class="help_info">
+            <view class="nickName">{{item.helpUser.nickName}}</view>
+            <view class="cutPrice">已成功砍价</view>
+            <view class="price">{{item.cutPrice}}元</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{firstCutMsg}}" class="first-cut-msg">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handleFirstCutMsgClose"><image src="../../images/close.png"></view>
+        <view class="pop-top">
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+          <view>{{titleMsg}}</view>
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+        </view>
+        <view class="pop-top-maran">￥ {{cutPrice}}</view>
+        <view class="pop-top-texar">您已砍{{cutPrice}}元！听说分享次数越多砍价成功的机会越大喔~</view>
+        <!-- <button open-type="share" class="bttom-btn" style="width: 240rpx;background: none;">{{cutMsgBtn}}</button> -->
+      </view>
+    </view>
+    <view wx:if="{{firstHelpMsg}}" class="pop-wrapper">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handlefirstHelpMsgClose"><image src="../../images/close.png"></view>
+        <image class="header-img" src="{{helpCutPriceList[0].helpUser.avatarUrl}}" />
+        <view class="thanks-kanjia">谢谢老铁帮忙砍价！</view>
+        <view class="thanks-texrar">邀你一起砍价，分享6个好友帮忙砍价，</view>
+        <view class="thanks-texrar2">就能领取这份超值课程喔！</view>
+        <view @tap="handeleHelpCutMsg" class="bttom-btn">{{cutMsgBtn}}</view>
+        <!-- <view @tap="handeleHelpCut" class="bttom-btn">我也要发起砍价</view> -->
+      </view>
+    </view>
+    <view wx:if="{{helpOtherOrderMsg}}" class="help-other-ordermsg">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handleHelpOtherOrderMsgClose"><image src="../../images/close.png"></view>
+        <view class="pop-top">
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+          <view>{{titleMsg}}</view>
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+        </view>
+        <view class="zhuliover">您的助力次数已用完</view>
+        <view class="usereverone">每个用户只能帮好友助力一个活动！</view>
+        <view @tap="handeleHelpCut" class="bttom-btn">{{cutMsgBtn}}</view>
+      </view>
+    </view>
+    <view wx:if="{{cutPriceHelpExpired}}" class="cut-price-expiredmsg">
+      <view class="pop-bd"></view>
+      <view class="pop-main">
+        <view class="close" @tap="handleCutPriceExpiredMsgClose"><image src="../../images/close.png"></view>
+        <view class="pop-top">
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-left.png" />
+          <view>{{titleMsg}}</view>
+          <image wx:if="{{staticUrl}}" class="" src="{{staticUrl}}/images/tip-right.png" />
+        </view>
+        <view class="letnight">来晚啦</view>
+        <view class="activeover">该活动已结束!</view>
+        <view @tap="handeleGoHome" class="bttom-btn">{{cutMsgBtn}}</view>
+      </view>
+    </view>
+    <view class="zw"></view>
+    <view class="bottombox">
+      <button wx:if="{{bottomBtn === 'inviteHelp'}}" open-type="share" class="bottom" >喊好友砍一刀</button>
+      <button wx:if="{{bottomBtn === 'cutPriceSuccess' && awardType === 'previewImage'}}" class="bottom" @tap="handleAwardImg">活动成功，点击拿课程包</button>
+      <navigator wx:if="{{bottomBtn === 'cutPriceSuccess' && awardType === 'miniProgram'}}" class="bottom" open-type="navigate" app-id="{{targetAppId}}" target="{{target}}" path="{{targetPath}}" version="{{version}}">活动成功，点击拿课程包</navigator>
+      <button @tap="handeleAgainCut" wx:if="{{bottomBtn === 'againLaunch'}}" class="bottom" >重新发起活动</button>
+      <button @tap="handeleHelpCut" wx:if="{{bottomBtn === 'helpLaunch'}}" class="bottom" >我也要发起砍价</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Pop from '../../components/pop' // 弹出层
+  import {
+    staticUrl
+  } from '@/utils'
+  import {
+    xqCutPrice
+  } from '@/api/home'
+  export default class Reduce extends wepy.page {
+    config = {
+      navigationBarTitleText: '砍价详情',
+      navigationBarBackgroundColor: 'white',
+      navigationBarTextStyle: 'black'
+    }
+    components = {
+      Pop
+    }
+    data = {
+      staticUrl,
+      confirmList: {},
+      bottomBtn: '',
+      helpCutPriceList: [],
+      day: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      marginLeft: 0,
+      orderId: '',
+      cutPrice: '',
+      costPricePercent: '',
+      originalPrice: '',
+      msgTitle: '',
+      msgCutPrice: '',
+      msgContent: [],
+      msgObj: {},
+      cutMsgBtn: '',
+      titleMsg: '',
+      orderStatus: '',
+      awardImg: '',
+      awardType: '',
+      targetAppId: '',
+      target: '',
+      version: '',
+      targetPath: '',
+      activedId: '',
+      timer: '',
+      isCutSucc: false,
+      firstCutMsg: false,
+      firstHelpMsg: false,
+      helpOtherOrderMsg: false,
+      cutPriceHelpExpired: false
+    }
+    computed = {}
+    watch = {}
+    mixins = []
+    onLoad(option) {
+      this.cutPriceHelpExpired = false
+      this.helpOtherOrderMsg = false
+      this.firstHelpMsg = false
+      this.firstCutMsg = false
+      this.orderId = option.orderId
+      this.$parent.globalData.orderId = option.orderId
+    }
+    onShow() {
+      this.init(this.orderId)
+    }
+    methods = {
+      handleShowRegular() {
+        this.$invoke('Pop', 'show-pop', {
+          title: '活动规则',
+          content: [
+            '1.邀请好友一起砍价，砍到0元即可免费领取课程资源；',
+            '2.每个活动只需邀请6个好友帮忙砍价，即可获得免费课程；',
+            '3.每个用户只能帮好友助力一个活动；',
+            '4.砍价完成后可根据小程序页面引导领取课程资源；',
+            '5.主办方可以根据本活动的实际举办情况对活动规则进行变动或调整，相关变动或者调整将公布在活动页面上，公布后依法生效；'
+          ]
+        })
+      },
+      handeleAgainCut() {
+        wx.navigateTo({
+          url: `/pages/detailskanjia/index?id=${this.activedId}`
+        })
+      },
+      handeleHelpCut() {
+        this.$parent.$wxapp.aldstat.sendEvent('助力者砍价详情页', { ID: this.activedId })
+        wx.navigateTo({
+          url: `/pages/detailskanjia/index?id=${this.activedId}`
+        })
+      },
+      handeleHelpCutMsg() {
+        this.$parent.$wxapp.aldstat.sendEvent('助力者砍价详情弹窗', { ID: this.activedId })
+        wx.navigateTo({
+          url: `/pages/detailskanjia/index?id=${this.activedId}`
+        })
+      },
+      handeleGoHome() {
+        wx.navigateTo({
+          url: '/pages/home/index'
+        })
+      },
+      handleAwardImg() {
+        this.$parent.$wxapp.aldstat.sendEvent('活动成功页', { ID: this.activedId })
+        wx.previewImage({
+          current: this.awardImg,
+          urls: [this.awardImg]
+        })
+      },
+      handleFirstCutMsgClose() {
+        this.firstCutMsg = false
+      },
+      handlefirstHelpMsgClose() {
+        this.firstHelpMsg = false
+      },
+      handleHelpOtherOrderMsgClose() {
+        this.helpOtherOrderMsg = false
+      },
+      handleCutPriceExpiredMsgClose() {
+        this.cutPriceHelpExpired = false
+      }
+    }
+    events = {
+  
+    }
+    // ==========  自定义函数必须写在这个之后  =====================================
+    async init(id) {
+      const res = await xqCutPrice({
+        method: 'GET',
+        data: {
+          orderId: id
+        }
+      })
+      this.confirmList = res
+      this.helpCutPriceList = res.helpCutPriceList.map(item => {
+        if (item.helpUser.nickName.length > 5) {
+          item.helpUser.nickName = item.helpUser.nickName.substr(0, 4) + '...'
+        }
+        return item
+      })
+      this.bottomBtn = res.bottomBtn
+      this.orderStatus = res.orderStatus
+      this.activedId = res.activity.id
+      if (this.orderStatus === 'Done' && res.activity.award !== null) {
+        this.targetPath = res.activity.award.navigator.path
+        this.target = res.activity.award.navigator.target
+        this.version = res.activity.award.navigator.version
+        this.targetAppId = res.activity.award.navigator.appId
+        this.awardType = res.activity.award.type
+        this.awardImg = res.activity.award.navigator.url
+      }
+      for (let i = 0; i < res.helpCutPriceList.length; i++) {
+        res.helpCutPriceList[i].cutPrice = (res.helpCutPriceList[i].cutPrice / 100).toFixed(2)
+      }
+      this.cutPrice = (res.cutPrice / 100).toFixed(2)
+      this.originalPrice = (res.costPrice / 100).toFixed(2)
+      this.costPricePercent = (res.cutPrice / res.costPrice) * 100
+      this.marginLeft = (this.costPricePercent / 100 * 650 - 65) + 'rpx'
+      if (res.countdown > 0) {
+        this.timestampToTime(res.countdown)
+      }
+      if (res.pop === 'firstLaunchSuccess') {
+        const self = this
+        this.titleMsg = '提示'
+        this.cutMsgBtn = '喊好友砍一刀'
+        this.firstCutMsg = true
+        setTimeout(() => {
+          self.firstCutMsg = false
+          this.$apply()
+        }, 5000)
+      } else if (res.pop === 'firstHelpSuccess') {
+        this.cutMsgBtn = '我也要发起砍价'
+        this.firstHelpMsg = true
+      } else if (res.pop === 'helpOtherOrder') {
+        this.titleMsg = '提示'
+        this.cutMsgBtn = '我要自己领取课程'
+        this.helpOtherOrderMsg = true
+      } else if (res.pop === 'cutPriceHelpExpired') {
+        this.titleMsg = '提示'
+        this.cutMsgBtn = '查看所有活动'
+        this.cutPriceHelpExpired = true
+      }
+      this.$apply()
+      return Promise.resolve()
+    }
+    timestampToTime(timestamp) {
+      if (timestamp < 1000) return
+      if (this.timer) clearTimeout(this.timer)
+      const shake = () => {
+        this.timer = setTimeout(async() => {
+          if (timestamp > 1000) {
+            shake(timestamp)
+          } else {
+            this.init(this.orderId)
+            console.log(`当前时间 ${Date.now()}: 代码走到了这里`)
+          }
+          const day = parseInt(timestamp / (1000 * 60 * 60 * 24))
+          const hours = parseInt((timestamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+          const minutes = parseInt((timestamp % (1000 * 60 * 60)) / (1000 * 60))
+          const seconds = parseInt((timestamp % (1000 * 60)) / 1000)
+          timestamp -= 1000
+          this.day = this.day === (day > 9 ? day : '0' + day) ? this.day : day > 9 ? day : '0' + day
+          this.hours = this.hours === (hours > 9 ? hours : '0' + hours) ? this.hours : hours > 9 ? hours : '0' + hours
+          this.minutes = this.minutes === (minutes > 9 ? minutes : '0' + minutes) ? this.minutes : minutes > 9 ? minutes : '0' + minutes
+          this.seconds = seconds > 9 ? seconds : '0' + seconds
+          this.$apply()
+        }, 1000)
+      }
+      shake(timestamp)
+    }
+    onUnload() {
+      if (this.timer) clearTimeout(this.timer)
+    }
+    // ==========  用户分享 =====================================================
+    onShareAppMessage(e) {
+      if (e.from === 'button') {
+        this.$parent.$wxapp.aldstat.sendEvent('砍价详情页', { ID: this.activedId })
+        return {
+          title: '免费领取这份绝密课程只差你了，快来帮我砍一刀！',
+          path: `/pages/home/index?type=shareCollage&redirectUrl=/pages/reduceActivity/index&orderId=${this.orderId}`
+        }
+      } else {
+        return {
+          title: '免费领取这份绝密课程只差你了，快来帮我砍一刀！',
+          path: `/pages/home/index?type=shareCollage&redirectUrl=/pages/reduceActivity/index&orderId=${this.orderId}`
+        }
+      }
+    }
+  }
+</script>
+
+<style type='less' src="index.less">
+
+</style>

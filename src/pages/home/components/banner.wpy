@@ -1,0 +1,98 @@
+<style lang="less">
+  .banner {
+    width: 720rpx;
+    height: 360rpx;
+    margin: 0 15rpx;
+    box-sizing: border-box;
+    box-shadow: 0 5rpx 14rpx 0 rgba(0, 0, 0, .18);
+    swiper {
+      height: 360rpx;
+    }
+  }
+  .slide-image {
+    width: 720rpx;
+    height: 360rpx;
+    border-radius: 10rpx;
+    //margin: 0rpx 15rpx 0rpx 15rpx;
+    box-shadow: 0 5rpx 14rpx 0 rgba(0, 0, 0, .18);
+  }
+  .swiper-box .wx-swiper-dots.wx-swiper-dots-horizontal {
+    margin-bottom: 2rpx;
+  }
+  .swiper-box .wx-swiper-dot {
+    width: 6rpx;
+    display: inline-flex;
+    height: 6rpx;
+    margin-left: -3rpx;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .swiper-box .wx-swiper-dot::before {
+    content: '';
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3rpx;
+  }
+  .swiper-box .wx-swiper-dot-active {
+    width: 12rpx;
+    background: rgba(255, 255, 255, 1);
+  }
+  .swiper-box .wx-swiper-dot-active::before {
+    background: rgba(255, 255, 255, 1);
+  }
+</style>
+
+<template>
+  <view class="banner">
+    <swiper circular="true" class="swiper-box" indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+      <swiper-item wx:for="{{indexBanners}}" wx:key="{{index}}">
+        <image src="{{item.imageUrl}}" @tap="toActivity({{item.activeUrl}}, {{index + 1}})" class="slide-image" width="355" height="150" />
+      </swiper-item>
+    </swiper>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { banner } from '@/api/home'
+  // import { throttle } from '@/utils'
+  export default class Banner extends wepy.component {
+    data = {
+      indicatorDots: true,
+      autoplay: true,
+      interval: 3000,
+      duration: 1000,
+      indexBanners: {}
+    };
+    props = {
+      isClick: Boolean
+      // bannerList: Array
+    }
+    onLoad() {
+      this.banner()
+    }
+    methods = {
+      toActivity(val, index) {
+        // console.log(this.$parent.$wxapp, index, `打印 ${Date.now()}`)
+        this.$parent.$wxapp.aldstat.sendEvent('index-banner', { ID: index + '' })
+        if (this.isClick) {
+          wepy.navigateTo({
+            url: val
+          })
+        }
+      }
+    }
+    async banner() {
+      const res = await banner({
+      })
+      this.indexBanners = res
+      this.$apply()
+      return Promise.resolve()
+    }
+    toActivity(url) {
+      wepy.navigateTo({
+        url
+      })
+    }
+  }
+</script>

@@ -1,0 +1,84 @@
+{
+	"description": "full stack mp",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx59ee204e97044423",
+	"projectname": "%E8%BF%90%E8%90%A5FE",
+	"miniprogramRoot": "./dist",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": 0,
+					"name": "课程列表",
+					"pathName": "pages/details/course-list",
+					"query": "courseId=5b1106bdc5ee9fa3b6d5c57c"
+				},
+				{
+					"id": -1,
+					"name": "拼团详情",
+					"pathName": "pages/details/index",
+					"query": "collageId=5b0f5db5a1dd2c7ef86721ae"
+				},
+				{
+					"id": 2,
+					"name": "视频课程详情",
+					"pathName": "pages/details/video",
+					"query": "lessonId=5b14d24f76259e882519e192"
+				},
+				{
+					"id": 3,
+					"name": "活动",
+					"pathName": "pages/details/index",
+					"query": "collageId=5b10c07c54f27f7970f03cdc"
+				},
+				{
+					"id": -1,
+					"name": "课程详情",
+					"pathName": "pages/details/course-list",
+					"query": "courseId=5b10dac1c5ee9fa3b6d5c570"
+				},
+				{
+					"id": -1,
+					"name": "课程列表",
+					"pathName": "pages/active/index",
+					"query": "activeId=5b10da97c5ee9fa3b6d5c56b"
+				},
+				{
+					"id": -1,
+					"name": "wode ",
+					"pathName": "pages/home/index",
+					"query": "activeId=5b10da97c5ee9fa3b6d5c56b"
+				},
+				{
+					"id": -1,
+					"name": "wode ",
+					"pathName": "pages/source/index",
+					"query": "activeId=5b10da97c5ee9fa3b6d5c56b"
+				}
+			]
+		}
+	}
+}
